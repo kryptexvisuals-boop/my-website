@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ThumbnailCTR — Stop Losing Views</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+<style>
+  /* ─── TOKENS ─────────────────────────────────────────── */
+  :root {
+    --bg:        #080808;
+    --bg2:       #0e0e0e;
+    --bg3:       #141414;
+    --surface:   #1a1a1a;
+    --border:    rgba(255,255,255,0.07);
+    --green:     #00ff88;
+    --green-dim: #00cc6a;
+    --orange:    #ff6b00;
+    --orange-dim:#cc5500;
+    --white:     #f5f5f5;
+    --muted:     #888;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body:    'DM Sans', sans-serif;
+    --radius:    12px;
+    --max:       1100px;
+    --trans:     0.25s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ─── RESET ──────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  img { display: block; max-width: 100%; }
+  a { text-decoration: none; color: inherit; }
+  ul { list-style: none; }
+
+  /* ─── GRAIN OVERLAY ──────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+    opacity: .45;
+  }
+
+  /* ─── STICKY CTA ─────────────────────────────────────── */
+  .sticky-cta {
+    position: fixed; bottom: 22px; right: 22px; z-index: 1000;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--green); color: #000;
+    padding: 14px 22px; border-radius: 50px;
+    font-family: var(--font-body); font-weight: 700; font-size: .9rem;
+    box-shadow: 0 0 32px rgba(0,255,136,.35);
+    cursor: pointer; border: none;
+    transition: transform var(--trans), box-shadow var(--trans), background var(--trans);
+    animation: floatIn 0.6s 1s both;
+  }
+  .sticky-cta:hover {
+    background: #fff; transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 0 48px rgba(0,255,136,.5);
+  }
+  .sticky-cta svg { width:18px; height:18px; flex-shrink:0; }
+
+  /* ─── NAV ────────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 5%;
+    background: rgba(8,8,8,.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem; letter-spacing: .05em;
+    color: var(--white);
+  }
+  .nav-logo span { color: var(--green); }
+  .nav-cta {
+    background: var(--green); color: #000;
+    padding: 9px 20px; border-radius: 8px;
+    font-weight: 700; font-size: .85rem;
+    transition: background var(--trans), transform var(--trans);
+  }
+  .nav-cta:hover { background: #fff; transform: scale(1.04); }
+
+  /* ─── SHARED LAYOUT ──────────────────────────────────── */
+  section { padding: 100px 5%; }
+  .container { max-width: var(--max); margin: 0 auto; }
+  .label {
+    display: inline-block;
+    font-size: .75rem; font-weight: 700; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--green);
+    border: 1px solid rgba(0,255,136,.3);
+    background: rgba(0,255,136,.07);
+    padding: 5px 14px; border-radius: 99px; margin-bottom: 22px;
+  }
+  .label.orange { color: var(--orange); border-color: rgba(255,107,0,.3); background: rgba(255,107,0,.07); }
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    letter-spacing: .03em; line-height: 1.05;
+    margin-bottom: 18px;
+  }
+  .sub {
+    color: var(--muted); font-size: 1.05rem;
+    max-width: 560px; line-height: 1.7;
+  }
+
+  /* ─── BTN ────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 15px 30px; border-radius: 10px;
+    font-family: var(--font-body); font-weight: 700; font-size: 1rem;
+    cursor: pointer; border: none; transition: all var(--trans);
+  }
+  .btn-green { background: var(--green); color: #000; }
+  .btn-green:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,255,136,.3); }
+  .btn-outline { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,.25); }
+  .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.05); }
+  .btn-orange { background: var(--orange); color: #fff; }
+  .btn-orange:hover { background: #ff8c33; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,0,.35); }
+
+  /* ─── HERO ───────────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding-top: 120px; padding-bottom: 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 55% at 70% 50%, rgba(0,255,136,.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,107,0,.06) 0%, transparent 65%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero .container {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--green); margin-bottom: 24px;
+  }
+  .hero-tag::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); animation: pulse 1.8s infinite;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 6rem);
+    letter-spacing: .02em; line-height: 1;
+    margin-bottom: 22px;
+  }
+  .hero h1 .accent { color: var(--green); }
+  .hero h1 .accent-o { color: var(--orange); }
+  .hero-sub {
+    color: #aaa; font-size: 1.1rem; line-height: 1.75;
+    margin-bottom: 38px; max-width: 480px;
+  }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-stat {
+    margin-top: 48px; display: flex; gap: 36px; flex-wrap: wrap;
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 3px; }
+  .stat-num {
+    font-family: var(--font-display); font-size: 2rem; letter-spacing: .03em; color: var(--white);
+  }
+  .stat-num span { color: var(--green); }
+  .stat-lbl { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+
+  /* hero visual */
+  .hero-visual {
+    position: relative; display: flex; flex-direction: column; gap: 16px;
+  }
+  .thumb-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    transition: transform var(--trans), border-color var(--trans);
+  }
+  .thumb-card:hover { transform: translateY(-4px); border-color: rgba(0,255,136,.25); }
+  .thumb-card-img {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .thumb-card-img .play { font-size: 2.5rem; opacity: .3; }
+  .thumb-fake-content {
+    width: 80%; height: 50%; background: linear-gradient(90deg, #2a2a2a, #333);
+    border-radius: 6px;
+  }
+  .thumb-card-meta {
+    padding: 12px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .thumb-card-label { font-size: .78rem; color: var(--muted); }
+  .ctr-badge {
+    font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+    padding: 3px 10px; border-radius: 99px;
+    background: rgba(0,255,136,.12); color: var(--green);
+  }
+  .ctr-badge.bad { background: rgba(255,60,60,.12); color: #ff6060; }
+  .thumb-card:nth-child(2) { transform: scale(.95); opacity: .7; }
+  .thumb-card:nth-child(2):hover { transform: scale(.97); opacity: .9; }
+
+  /* ─── PROBLEM ────────────────────────────────────────── */
+  .problem { background: var(--bg2); }
+  .problem .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .problem-lines { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
+  .problem-line {
+    display: flex; align-items: flex-start; gap: 18px;
+    padding: 22px 0; border-bottom: 1px solid var(--border);
+    animation: fadeUp .5s both;
+  }
+  .problem-line:last-child { border-bottom: none; }
+  .problem-num {
+    font-family: var(--font-display); font-size: 2.2rem; color: var(--orange);
+    line-height: 1; flex-shrink: 0; width: 48px;
+  }
+  .problem-line-text strong { display: block; font-size: 1.05rem; margin-bottom: 5px; }
+  .problem-line-text span { color: var(--muted); font-size: .9rem; }
+  .problem-cta-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px;
+    margin-top: 40px;
+  }
+  .problem-cta-block h3 {
+    font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 12px;
+  }
+  .problem-cta-block p { color: var(--muted); font-size: .95rem; margin-bottom: 22px; }
+
+  /* ─── BEFORE / AFTER ─────────────────────────────────── */
+  .ba-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 52px;
+  }
+  .ba-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: transform var(--trans), border-color var(--trans);
+  }
+  .ba-card:hover { transform: translateY(-5px); border-color: rgba(0,255,136,.2); }
+  .ba-img {
+    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: rgba(255,255,255,.3);
+    position: relative;
+  }
+  .ba-img.before {
+    background: linear-gradient(135deg, #1c1c1c, #242424);
+    border-bottom: 1px solid var(--border);
+  }
+  .ba-img.after {
+    background: linear-gradient(135deg, #0d1f14, #0f2319);
+    border-bottom: 1px solid rgba(0,255,136,.12);
+  }
+  .ba-label-float {
+    position: absolute; top: 10px; left: 10px;
+    font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+    padding: 3px 10px; border-radius: 99px; text-transform: uppercase;
+  }
+  .ba-label-float.b { background: rgba(255,60,60,.18); color: #ff6060; }
+  .ba-label-float.a { background: rgba(0,255,136,.18); color: var(--green); }
+  .ba-body { padding: 18px 20px; }
+  .ba-title { font-weight: 700; font-size: .95rem; margin-bottom: 12px; }
+  .ba-metrics { display: flex; gap: 16px; }
+  .ba-metric { display: flex; flex-direction: column; gap: 2px; }
+  .ba-metric-val { font-family: var(--font-display); font-size: 1.5rem; }
+  .ba-metric-val.green { color: var(--green); }
+  .ba-metric-lbl { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .ba-arrow {
+    text-align: center; padding: 6px 0;
+    font-size: 1.2rem; color: var(--green); opacity: .6;
+  }
+
+  /* ─── OFFER ──────────────────────────────────────────── */
+  .offer { background: var(--bg2); }
+  .offer .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .offer-benefits { margin-top: 32px; display: flex; flex-direction: column; gap: 14px; }
+  .benefit-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px; border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color var(--trans), transform var(--trans);
+  }
+  .benefit-row:hover { border-color: rgba(0,255,136,.25); transform: translateX(4px); }
+  .benefit-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(0,255,136,.1); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1rem;
+  }
+  .benefit-row strong { display: block; font-size: .95rem; margin-bottom: 3px; }
+  .benefit-row span { font-size: .85rem; color: var(--muted); }
+  .offer-visual {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px 36px; text-align: center;
+    position: relative;
+  }
+  .offer-visual::before {
+    content: '';
+    position: absolute; inset: -1px; border-radius: 20px;
+    background: linear-gradient(135deg, rgba(0,255,136,.2), transparent 60%);
+    z-index: -1;
+  }
+  .offer-big-num {
+    font-family: var(--font-display); font-size: 5rem;
+    color: var(--green); line-height: 1;
+    margin-bottom: 8px;
+  }
+  .offer-big-num span { font-size: 2.5rem; }
+  .offer-visual p { color: var(--muted); font-size: .95rem; margin-top: 6px; }
+  .offer-divider {
+    width: 40px; height: 2px; background: var(--border);
+    margin: 20px auto;
+  }
+
+  /* ─── CASE STUDY ─────────────────────────────────────── */
+  .case { background: var(--bg3); }
+  .case-card {
+    margin-top: 48px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .case-visual {
+    background: linear-gradient(135deg, #0a1f12, #0d2918);
+    padding: 48px 40px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    border-right: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .case-visual::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,136,.15) 0%, transparent 70%);
+  }
+  .case-channel { font-size: .8rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .1em; }
+  .case-channel-name { font-family: var(--font-display); font-size: 2rem; margin-bottom: 32px; }
+  .case-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .case-metric { }
+  .case-metric-val { font-family: var(--font-display); font-size: 2.2rem; color: var(--green); line-height: 1; }
+  .case-metric-lbl { font-size: .78rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .08em; }
+  .case-body { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
+  .case-quote {
+    font-size: 1.15rem; line-height: 1.75; color: #ccc;
+    margin-bottom: 28px; font-style: italic;
+  }
+  .case-quote::before { content: '"'; color: var(--green); font-size: 2rem; line-height: 0; vertical-align: -.4em; margin-right: 4px; }
+  .case-author { display: flex; align-items: center; gap: 14px; }
+  .case-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #2a2a2a, #333);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .case-author-name { font-weight: 700; font-size: .95rem; }
+  .case-author-sub { font-size: .8rem; color: var(--muted); }
+
+  /* ─── PRICING ────────────────────────────────────────── */
+  .pricing-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-top: 52px; max-width: 720px; margin-left: auto; margin-right: auto;
+  }
+  .price-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px 32px;
+    transition: transform var(--trans);
+    position: relative;
+  }
+  .price-card:hover { transform: translateY(-5px); }
+  .price-card.featured {
+    border-color: var(--green);
+    background: linear-gradient(145deg, #0d1f14, var(--surface));
+    box-shadow: 0 0 60px rgba(0,255,136,.12);
+  }
+  .price-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #000;
+    font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    padding: 5px 16px; border-radius: 99px;
+    white-space: nowrap;
+  }
+  .price-name { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 12px; }
+  .price-amount {
+    font-family: var(--font-display); font-size: 3.5rem; line-height: 1; margin-bottom: 6px;
+  }
+  .price-amount sup { font-size: 1.5rem; vertical-align: top; margin-top: .5rem; }
+  .price-amount .per { font-size: 1rem; color: var(--muted); font-family: var(--font-body); }
+  .price-original { font-size: .85rem; color: var(--muted); text-decoration: line-through; margin-bottom: 20px; }
+  .price-savings {
+    display: inline-block; background: rgba(0,255,136,.1); color: var(--green);
+    font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 22px;
+  }
+  .price-features { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
+  .price-feature { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
+  .price-feature::before {
+    content: '✓'; width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(0,255,136,.15); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 900; flex-shrink: 0;
+  }
+  .price-card.featured .price-feature::before { background: rgba(0,255,136,.25); }
+
+  /* ─── RISK REVERSAL ──────────────────────────────────── */
+  .risk { background: var(--bg2); }
+  .risk-inner {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 60px 48px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .risk-inner::before {
+    content: '';
+    position: absolute; top: -80px; left: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,0,.08) 0%, transparent 70%);
+  }
+  .risk-shields { display: flex; flex-direction: column; gap: 20px; }
+  .shield {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 20px; border-radius: 12px;
+    background: rgba(255,255,255,.03); border: 1px solid var(--border);
+    transition: border-color var(--trans);
+  }
+  .shield:hover { border-color: rgba(255,107,0,.3); }
+  .shield-icon {
+    font-size: 1.6rem; flex-shrink: 0;
+    width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,107,0,.1); border-radius: 10px;
+  }
+  .shield strong { display: block; font-size: .95rem; margin-bottom: 5px; }
+  .shield span { color: var(--muted); font-size: .85rem; }
+  .risk-headline { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; margin-bottom: 18px; }
+  .risk-headline .accent { color: var(--orange); }
+
+  /* ─── PROCESS ────────────────────────────────────────── */
+  .process-steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 52px; position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute; top: 32px; left: 16.6%; right: 16.6%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--green), var(--border), transparent);
+  }
+  .step {
+    text-align: center; padding: 36px 28px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; transition: border-color var(--trans), transform var(--trans);
+    position: relative;
+  }
+  .step:hover { border-color: rgba(0,255,136,.3); transform: translateY(-4px); }
+  .step-num {
+    font-family: var(--font-display); font-size: 3rem; color: var(--green);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .step h3 { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+  .step p { color: var(--muted); font-size: .88rem; line-height: 1.6; }
+
+  /* ─── URGENCY ────────────────────────────────────────── */
+  .urgency {
+    background: linear-gradient(135deg, #0a0a0a, #111);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center; padding: 80px 5%;
+  }
+  .urgency-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,107,0,.1); border: 1px solid rgba(255,107,0,.3);
+    color: var(--orange); padding: 8px 20px; border-radius: 99px;
+    font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
+    margin-bottom: 28px;
+  }
+  .urgency-pill::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--orange); animation: pulse 1.5s infinite;
+  }
+  .urgency h2 { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 16px; }
+  .urgency h2 span { color: var(--orange); }
+  .urgency p { color: var(--muted); max-width: 500px; margin: 0 auto 36px; }
+  .slots { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 38px; }
+  .slot {
+    width: 44px; height: 18px; border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .slot.taken { background: rgba(255,107,0,.6); border-color: transparent; }
+  .slot.open { background: rgba(0,255,136,.2); border-color: rgba(0,255,136,.3); }
+
+  /* ─── FINAL CTA ──────────────────────────────────────── */
+  .finalcta {
+    background: var(--bg);
+    text-align: center;
+    padding: 120px 5%;
+    position: relative; overflow: hidden;
+  }
+  .finalcta::before {
+    content: '';
+    position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,136,.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .finalcta h2 { font-size: clamp(2.2rem, 6vw, 5rem); margin-bottom: 18px; }
+  .finalcta h2 .green { color: var(--green); }
+  .finalcta p { color: var(--muted); max-width: 500px; margin: 0 auto 42px; font-size: 1.05rem; }
+  .final-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-wa {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #25D366; color: #fff;
+    padding: 15px 30px; border-radius: 10px;
+    font-weight: 700; font-size: 1rem;
+    transition: all var(--trans);
+  }
+  .btn-wa:hover { background: #1ebe5b; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,211,102,.3); }
+
+  /* ─── FOOTER ─────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--muted); font-size: .82rem; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* ─── ANIMATIONS ─────────────────────────────────────── */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .5; transform: scale(1.5); }
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(20px) scale(.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .65s ease, transform .65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .hero .container,
+    .problem .container,
+    .offer .container,
+    .case-card,
+    .risk-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { display: none; }
+    .ba-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .process-steps { grid-template-columns: 1fr; }
+    .process-steps::before { display: none; }
+    .case-visual { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  @media (max-width: 600px) {
+    section { padding: 70px 5%; }
+    nav { padding: 14px 5%; }
+    .risk-inner { padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY CTA -->
+<button class="sticky-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.82a.5.5 0 0 1-.62-.62l.82-2.87a2 2 0 0 1 .506-.856z"/></svg>
+  Get Free Test
+</button>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Thumb<span>CTR</span></span>
+  <a href="#contact" class="nav-cta">Get Free Thumbnail Test →</a>
+</nav>
+
+<!-- ① HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-left reveal">
+      <div class="hero-tag">YouTube CTR Specialist</div>
+      <h1>
+        Your Thumbnails<br />Are <span class="accent-o">Killing</span><br />Your <span class="accent">Views</span>
+      </h1>
+      <p class="hero-sub">
+        Most creators obsess over content—but YouTube decides who sees it based on
+        your thumbnail's Click-Through Rate. A bad thumbnail = invisible video,
+        no matter how good it is.
+      </p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn btn-green">Get Free Thumbnail Test →</a>
+        <a href="#pricing" class="btn btn-outline">See Pricing</a>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-item">
+          <div class="stat-num"><span>3×</span></div>
+          <div class="stat-lbl">Avg CTR increase</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">200<span>+</span></div>
+          <div class="stat-lbl">Thumbnails fixed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num"><span>$</span>0</div>
+          <div class="stat-lbl">To get started</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="thumb-card">
+        <div class="thumb-card-img">
+          <div class="thumb-fake-content"></div>
+        </div>
+        <div class="thumb-card-meta">
+          <span class="thumb-card-label">After ThumbCTR</span>
+          <span class="ctr-badge">8.2% CTR</span>
+        </div>
+      </div>
+      <div class="thumb-card">
+        <div class="thumb-card-img" style="background:linear-gradient(135deg,#1a1a1a,#1d1d1d);">
+          <div class="thumb-fake-content" style="opacity:.4;"></div>
+        </div>
+        <div class="thumb-card-meta">
+          <span class="thumb-card-label">Before</span>
+          <span class="ctr-badge bad">2.1% CTR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ② PROBLEM -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="reveal">
+      <div class="label orange">The Real Problem</div>
+      <h2>Why Your Videos<br />Aren't Getting Clicked</h2>
+      <p class="sub">
+        YouTube's algorithm gives your video a test window. If people don't click—it stops pushing it.
+        Your thumbnail is the only thing that makes them click.
+      </p>
+      <div class="problem-cta-block">
+        <h3>Sound familiar?</h3>
+        <p>You spend 20+ hours on a video, upload it, and it gets 300 views. The algorithm didn't kill your video—your thumbnail did.</p>
+        <a href="#contact" class="btn btn-green">Fix My Thumbnails →</a>
+      </div>
+    </div>
+    <div class="problem-lines reveal">
+      <div class="problem-line">
+        <span class="problem-num">01</span>
+        <div class="problem-line-text">
+          <strong>Too much text, no visual hook</strong>
+          <span>Viewers decide in 0.3 seconds. Text-heavy thumbnails get skipped instantly.</span>
+        </div>
+      </div>
+      <div class="problem-line">
+        <span class="problem-num">02</span>
+        <div class="problem-line-text">
+          <strong>No emotional trigger</strong>
+          <span>If your thumbnail doesn't spark curiosity, fear, or excitement—it's invisible.</span>
+        </div>
+      </div>
+      <div class="problem-line">
+        <span class="problem-num">03</span>
+        <div class="problem-line-text">
+          <strong>Blending into the feed</strong>
+          <span>Your thumbnail competes with 20 others on screen. Most creators look exactly the same.</span>
+        </div>
+      </div>
+      <div class="problem-line">
+        <span class="problem-num">04</span>
+        <div class="problem-line-text">
+          <strong>Designed for looks, not clicks</strong>
+          <span>Beautiful ≠ high CTR. We design for the algorithm, not just aesthetics.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ BEFORE / AFTER -->
+<section id="results">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="label">Real Results</div>
+      <h2>Before vs After</h2>
+      <p class="sub" style="margin:0 auto;">See exactly what changes—and the numbers that prove it works.</p>
+    </div>
+    <div class="ba-grid">
+
+      <!-- Card 1 -->
+      <div class="ba-card reveal">
+        <div class="ba-img before">
+          <span class="ba-label-float b">Before</span>
+          THUMBNAIL PLACEHOLDER
+        </div>
+        <div class="ba-arrow">↓</div>
+        <div class="ba-img after">
+          <span class="ba-label-float a">After</span>
+          THUMBNAIL PLACEHOLDER
+        </div>
+        <div class="ba-body">
+          <div class="ba-title">Tech Review Channel</div>
+          <div class="ba-metrics">
+            <div class="ba-metric">
+              <div class="ba-metric-val green">7.8%</div>
+              <div class="ba-metric-lbl">New CTR</div>
+            </div>
+            <div class="ba-metric">
+              <div class="ba-metric-val green">+340%</div>
+              <div class="ba-metric-lbl">Views</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="ba-card reveal">
+        <div class="ba-img before">
+          <span class="ba-label-float b">Before</span>
+          THUMBNAIL PLACEHOLDER
+        </div>
+        <div class="ba-arrow">↓</div>
+        <div class="ba-img after">
+          <span class="ba-label-float a">After</span>
+          THUMBNAIL PLACEHOLDER
+        </div>
+        <div class="ba-body">
+          <div class="ba-title">Finance / Investing</div>
+          <div class="ba-metrics">
+            <div class="ba-metric">
+              <div class="ba-metric-val green">9.1%</div>
+              <div class="ba-metric-lbl">New CTR</div>
+            </div>
+            <div class="ba-metric">
+              <div class="ba-metric-val green">+510%</div>
+              <div class="ba-metric-lbl">Views</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="ba-card reveal">
+        <div class="ba-img before">
+          <span class="ba-label-float b">Before</span>
+          THUMBNAIL PLACEHOLDER
+        </div>
+        <div class="ba-arrow">↓</div>
+        <div class="ba-img after">
+          <span class="ba-label-float a">After</span>
+          THUMBNAIL PLACEHOLDER
+        </div>
+        <div class="ba-body">
+          <div class="ba-title">Fitness & Lifestyle</div>
+          <div class="ba-metrics">
+            <div class="ba-metric">
+              <div class="ba-metric-val green">6.4%</div>
+              <div class="ba-metric-lbl">New CTR</div>
+            </div>
+            <div class="ba-metric">
+              <div class="ba-metric-val green">+210%</div>
+              <div class="ba-metric-lbl">Views</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ④ OFFER -->
+<section class="offer" id="offer">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">What We Do</div>
+      <h2>We Fix CTR—<br />Not Just Design</h2>
+      <p class="sub">Other designers make thumbnails look good. We make thumbnails that get clicked—using psychology, data, and platform patterns.</p>
+      <div class="offer-benefits">
+        <div class="benefit-row">
+          <div class="benefit-icon">🎯</div>
+          <div>
+            <strong>CTR-First Strategy</strong>
+            <span>Every design decision is made to maximize click-through rate, not win design awards.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon">🧠</div>
+          <div>
+            <strong>Psychological Triggers</strong>
+            <span>Curiosity gaps, contrast, faces, color psychology—all engineered for your niche.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon">📊</div>
+          <div>
+            <strong>A/B Test Ready</strong>
+            <span>We deliver 2 thumbnail variants so YouTube picks the better performer automatically.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon">⚡</div>
+          <div>
+            <strong>48-Hour Turnaround</strong>
+            <span>Fast delivery means you never delay publishing because of thumbnails again.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon">🔄</div>
+          <div>
+            <strong>Unlimited Revisions</strong>
+            <span>We iterate until you're fully satisfied. Your approval is non-negotiable.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="offer-visual reveal">
+      <div class="offer-big-num"><span>+</span>312%</div>
+      <p>average CTR improvement<br />across all client thumbnails</p>
+      <div class="offer-divider"></div>
+      <p style="color:var(--muted);font-size:.85rem;line-height:1.7;">
+        Based on aggregated YouTube Analytics data from 200+ thumbnails delivered in 2023–2024. Individual results vary by niche and channel.
+      </p>
+      <div style="margin-top:28px;">
+        <a href="#contact" class="btn btn-green" style="width:100%;justify-content:center;">Start With a Free Test →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑤ CASE STUDY -->
+<section class="case" id="case">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="label">Case Study</div>
+      <h2>From 1.8% to 9.4% CTR<br />in 3 Thumbnails</h2>
+    </div>
+    <div class="case-card reveal">
+      <div class="case-visual">
+        <div>
+          <div class="case-channel">Client</div>
+          <div class="case-channel-name">TechWith<br />Aarav</div>
+        </div>
+        <div class="case-metrics-grid">
+          <div class="case-metric">
+            <div class="case-metric-val">1.8%</div>
+            <div class="case-metric-lbl">Old CTR</div>
+          </div>
+          <div class="case-metric">
+            <div class="case-metric-val">9.4%</div>
+            <div class="case-metric-lbl">New CTR</div>
+          </div>
+          <div class="case-metric">
+            <div class="case-metric-val">42K</div>
+            <div class="case-metric-lbl">Avg Views Before</div>
+          </div>
+          <div class="case-metric">
+            <div class="case-metric-val">218K</div>
+            <div class="case-metric-lbl">Avg Views After</div>
+          </div>
+        </div>
+      </div>
+      <div class="case-body">
+        <p class="case-quote">
+          I was posting consistently for 2 years and stuck at 40K views per video.
+          Three thumbnails in, my next video hit 200K. I genuinely thought my channel was broken before this.
+        </p>
+        <div class="case-author">
+          <div class="case-avatar">👨‍💻</div>
+          <div>
+            <div class="case-author-name">Aarav S.</div>
+            <div class="case-author-sub">Tech creator · 280K subscribers</div>
+          </div>
+        </div>
+        <div style="margin-top:28px;">
+          <a href="#contact" class="btn btn-green">Get Results Like This →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑥ PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="label">Pricing</div>
+      <h2>Simple, Transparent<br />Pricing</h2>
+      <p class="sub" style="margin:0 auto 52px;">No retainers. No subscriptions. Pay only for what you need.</p>
+    </div>
+    <div class="pricing-grid reveal">
+
+      <!-- Single -->
+      <div class="price-card">
+        <div class="price-name">Single Thumbnail</div>
+        <div class="price-amount"><sup>$</sup>35</div>
+        <p class="price-original">2 variants · 48hr delivery</p>
+        <div class="price-features">
+          <div class="price-feature">2 thumbnail variants</div>
+          <div class="price-feature">CTR strategy brief</div>
+          <div class="price-feature">48-hour delivery</div>
+          <div class="price-feature">Unlimited revisions</div>
+          <div class="price-feature">High-res PNG + PSD</div>
+        </div>
+        <a href="#contact" class="btn btn-outline" style="width:100%;justify-content:center;">Get Started</a>
+      </div>
+
+      <!-- Bundle -->
+      <div class="price-card featured">
+        <span class="price-badge">🔥 Best Value — Save $75</span>
+        <div class="price-name" style="margin-top:12px;">5-Thumbnail Bundle</div>
+        <div class="price-amount"><sup>$</sup>100</div>
+        <p class="price-original">Was $175 · Save $75</p>
+        <div class="price-savings">You save $75</div>
+        <div class="price-features">
+          <div class="price-feature">10 thumbnail variants</div>
+          <div class="price-feature">Channel CTR audit</div>
+          <div class="price-feature">Priority 24hr delivery</div>
+          <div class="price-feature">Unlimited revisions</div>
+          <div class="price-feature">Strategy call (20 min)</div>
+        </div>
+        <a href="#contact" class="btn btn-green" style="width:100%;justify-content:center;">Get the Bundle →</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:24px;">
+      Not sure yet? <a href="#contact" style="color:var(--green);">Get a free sample thumbnail first</a> — no payment required.
+    </p>
+  </div>
+</section>
+
+<!-- ⑦ RISK REVERSAL -->
+<section class="risk" id="guarantee">
+  <div class="container">
+    <div class="risk-inner reveal">
+      <div>
+        <div class="label orange">Zero Risk</div>
+        <h2 class="risk-headline">Try It Free.<br />Pay Only If You <span class="accent">Love It.</span></h2>
+        <p class="sub" style="margin-bottom:28px;">
+          We put our work on the line. No credit card, no commitment—just results first, payment second.
+        </p>
+        <a href="#contact" class="btn btn-orange">Claim Free Sample →</a>
+      </div>
+      <div class="risk-shields">
+        <div class="shield">
+          <div class="shield-icon">🎁</div>
+          <div>
+            <strong>Free Sample Thumbnail</strong>
+            <span>We create one real thumbnail for your channel—completely free. No strings attached.</span>
+          </div>
+        </div>
+        <div class="shield">
+          <div class="shield-icon">✅</div>
+          <div>
+            <strong>Pay Only If Satisfied</strong>
+            <span>Not happy with the result? You owe us exactly nothing. We only win when you win.</span>
+          </div>
+        </div>
+        <div class="shield">
+          <div class="shield-icon">♾️</div>
+          <div>
+            <strong>Unlimited Revisions</strong>
+            <span>We iterate until it's exactly right. Your satisfaction is the only deadline.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑧ PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="label">How It Works</div>
+      <h2>3 Steps to<br />Higher CTR</h2>
+    </div>
+    <div class="process-steps reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Share Your Video</h3>
+        <p>Send us your video link or title, your channel niche, and any reference thumbnails you like. Takes 2 minutes.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>We Build &amp; Strategize</h3>
+        <p>We study your audience, your competitors, and design 2 CTR-optimized thumbnail variants within 48 hours.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Watch Your CTR Climb</h3>
+        <p>Upload, run YouTube's A/B test, and watch the algorithm push your video to more viewers than ever before.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑨ URGENCY -->
+<section class="urgency" id="urgency">
+  <div class="container">
+    <div class="urgency-pill">Limited Availability</div>
+    <h2>Only <span>3 Spots</span> Left<br />This Week</h2>
+    <p>We take on a limited number of clients each week to ensure every thumbnail gets full attention. Once slots fill—you wait.</p>
+    <div class="slots">
+      <div class="slot taken"></div>
+      <div class="slot taken"></div>
+      <div class="slot taken"></div>
+      <div class="slot taken"></div>
+      <div class="slot taken"></div>
+      <div class="slot taken"></div>
+      <div class="slot taken"></div>
+      <div class="slot open"></div>
+      <div class="slot open"></div>
+      <div class="slot open"></div>
+    </div>
+    <a href="#contact" class="btn btn-orange" style="font-size:1.05rem;padding:17px 36px;">Secure My Spot →</a>
+  </div>
+</section>
+
+<!-- ⑩ FINAL CTA -->
+<section class="finalcta" id="contact">
+  <div class="container">
+    <div class="reveal">
+      <div class="label">Get Started Today</div>
+      <h2>Ready to Get<br /><span class="green">More Views?</span></h2>
+      <p>
+        Send us your YouTube channel link and we'll create a free thumbnail to prove what's possible.
+        No credit card. No commitment.
+      </p>
+      <div class="final-ctas">
+        <a class="btn-wa" href="https://wa.me/911234567890?text=Hi!%20I%20want%20a%20free%20thumbnail%20test%20for%20my%20YouTube%20channel." target="_blank">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          Message on WhatsApp
+        </a>
+        <a href="mailto:hello@thumbctr.com?subject=Free%20Thumbnail%20Test%20Request" class="btn btn-outline" style="padding:15px 30px;">
+          ✉ Email Us Instead
+        </a>
+      </div>
+      <p style="margin-top:24px;font-size:.82rem;color:var(--muted);">Average response time: under 2 hours · Free sample delivered within 48 hours</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="nav-logo" style="font-size:1.1rem;">Thumb<span style="color:var(--green)">CTR</span></span>
+  <span>© 2024 ThumbCTR · All Rights Reserved</span>
+  <span style="color:var(--green);">hello@thumbctr.com</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Sticky CTA hide on contact section
+  const sticky = document.querySelector('.sticky-cta');
+  const contactSec = document.getElementById('contact');
+  window.addEventListener('scroll', () => {
+    const rect = contactSec.getBoundingClientRect();
+    sticky.style.opacity = rect.top < window.innerHeight ? '0' : '1';
+    sticky.style.pointerEvents = rect.top < window.innerHeight ? 'none' : 'auto';
+  });
+
+  // Animate slots sequentially
+  setTimeout(() => {
+    document.querySelectorAll('.slot').forEach((s, i) => {
+      s.style.transition = `opacity 0.3s ${i * 0.06}s, transform 0.3s ${i * 0.06}s`;
+      s.style.opacity = '0'; s.style.transform = 'scaleX(0)';
+      requestAnimationFrame(() => {
+        setTimeout(() => { s.style.opacity = '1'; s.style.transform = 'scaleX(1)'; }, 50);
+      });
+    });
+  }, 300);
+</script>
+</body>
+</html>
