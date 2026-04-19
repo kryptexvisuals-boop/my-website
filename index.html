@@ -1,792 +1,918 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ThumbnailCTR — Stop Losing Views</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ThumbCTR — Performance Creative for YouTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-  /* ─── TOKENS ─────────────────────────────────────────── */
-  :root {
-    --bg:        #080808;
-    --bg2:       #0e0e0e;
-    --bg3:       #141414;
-    --surface:   #1a1a1a;
-    --border:    rgba(255,255,255,0.07);
-    --green:     #00ff88;
-    --green-dim: #00cc6a;
-    --orange:    #ff6b00;
-    --orange-dim:#cc5500;
-    --white:     #f5f5f5;
-    --muted:     #888;
-    --font-display: 'Bebas Neue', sans-serif;
-    --font-body:    'DM Sans', sans-serif;
-    --radius:    12px;
-    --max:       1100px;
-    --trans:     0.25s cubic-bezier(0.4,0,0.2,1);
-  }
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg:        #050505;
+  --bg-1:      #0a0a0a;
+  --bg-2:      #0f0f0f;
+  --surface:   #111111;
+  --surface-2: #161616;
+  --line:      rgba(255,255,255,0.06);
+  --line-mid:  rgba(255,255,255,0.10);
+  --white:     #ffffff;
+  --white-60:  rgba(255,255,255,0.6);
+  --white-30:  rgba(255,255,255,0.3);
+  --white-10:  rgba(255,255,255,0.06);
+  --cyan:      #00E5FF;
+  --cyan-dim:  rgba(0,229,255,0.12);
+  --cyan-glow: rgba(0,229,255,0.20);
+  --red:       #FF2D2D;
+  --red-dim:   rgba(255,45,45,0.10);
+  --font:      'Inter', -apple-system, sans-serif;
+  --max:       1080px;
+  --ease:      cubic-bezier(0.16,1,0.3,1);
+  --ease-out:  cubic-bezier(0.0,0,0.2,1);
+}
 
-  /* ─── RESET ──────────────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; font-size: 16px; }
-  body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: var(--font-body);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-  img { display: block; max-width: 100%; }
-  a { text-decoration: none; color: inherit; }
-  ul { list-style: none; }
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+body {
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+a { text-decoration:none; color:inherit; }
+ul { list-style:none; }
+img { display:block; max-width:100%; }
 
-  /* ─── GRAIN OVERLAY ──────────────────────────────────── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 9999;
-    opacity: .45;
-  }
+/* ═══════════════════════════════════════════
+   NOISE TEXTURE
+═══════════════════════════════════════════ */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9998; opacity:.5;
+}
 
-  /* ─── STICKY CTA ─────────────────────────────────────── */
-  .sticky-cta {
-    position: fixed; bottom: 22px; right: 22px; z-index: 1000;
-    display: flex; align-items: center; gap: 10px;
-    background: var(--green); color: #000;
-    padding: 14px 22px; border-radius: 50px;
-    font-family: var(--font-body); font-weight: 700; font-size: .9rem;
-    box-shadow: 0 0 32px rgba(0,255,136,.35);
-    cursor: pointer; border: none;
-    transition: transform var(--trans), box-shadow var(--trans), background var(--trans);
-    animation: floatIn 0.6s 1s both;
-  }
-  .sticky-cta:hover {
-    background: #fff; transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 0 48px rgba(0,255,136,.5);
-  }
-  .sticky-cta svg { width:18px; height:18px; flex-shrink:0; }
+/* ═══════════════════════════════════════════
+   LAYOUT HELPERS
+═══════════════════════════════════════════ */
+.wrap { max-width:var(--max); margin:0 auto; padding:0 5%; }
+section { padding:120px 5%; }
+@media(max-width:768px){ section{ padding:80px 5%; } }
 
-  /* ─── NAV ────────────────────────────────────────────── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 5%;
-    background: rgba(8,8,8,.85);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: var(--font-display);
-    font-size: 1.5rem; letter-spacing: .05em;
-    color: var(--white);
-  }
-  .nav-logo span { color: var(--green); }
-  .nav-cta {
-    background: var(--green); color: #000;
-    padding: 9px 20px; border-radius: 8px;
-    font-weight: 700; font-size: .85rem;
-    transition: background var(--trans), transform var(--trans);
-  }
-  .nav-cta:hover { background: #fff; transform: scale(1.04); }
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY SYSTEM
+═══════════════════════════════════════════ */
+.eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:600; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--cyan);
+  margin-bottom:28px;
+}
+.eyebrow::before {
+  content:''; display:block;
+  width:20px; height:1px; background:var(--cyan);
+}
+.eyebrow.red { color:var(--red); }
+.eyebrow.red::before { background:var(--red); }
 
-  /* ─── SHARED LAYOUT ──────────────────────────────────── */
-  section { padding: 100px 5%; }
-  .container { max-width: var(--max); margin: 0 auto; }
-  .label {
-    display: inline-block;
-    font-size: .75rem; font-weight: 700; letter-spacing: .15em;
-    text-transform: uppercase; color: var(--green);
-    border: 1px solid rgba(0,255,136,.3);
-    background: rgba(0,255,136,.07);
-    padding: 5px 14px; border-radius: 99px; margin-bottom: 22px;
-  }
-  .label.orange { color: var(--orange); border-color: rgba(255,107,0,.3); background: rgba(255,107,0,.07); }
-  h2 {
-    font-family: var(--font-display);
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
-    letter-spacing: .03em; line-height: 1.05;
-    margin-bottom: 18px;
-  }
-  .sub {
-    color: var(--muted); font-size: 1.05rem;
-    max-width: 560px; line-height: 1.7;
-  }
+h1,h2,h3,h4 { font-family:var(--font); line-height:1.08; letter-spacing:-.03em; }
+h1 { font-size:clamp(3rem,6.5vw,6rem); font-weight:800; }
+h2 { font-size:clamp(2rem,4.5vw,3.8rem); font-weight:800; }
+h3 { font-size:clamp(1.1rem,2vw,1.35rem); font-weight:700; letter-spacing:-.02em; }
+h4 { font-size:1rem; font-weight:600; letter-spacing:-.01em; }
 
-  /* ─── BTN ────────────────────────────────────────────── */
-  .btn {
-    display: inline-flex; align-items: center; gap: 9px;
-    padding: 15px 30px; border-radius: 10px;
-    font-family: var(--font-body); font-weight: 700; font-size: 1rem;
-    cursor: pointer; border: none; transition: all var(--trans);
-  }
-  .btn-green { background: var(--green); color: #000; }
-  .btn-green:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,255,136,.3); }
-  .btn-outline { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,.25); }
-  .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.05); }
-  .btn-orange { background: var(--orange); color: #fff; }
-  .btn-orange:hover { background: #ff8c33; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,0,.35); }
+.lead {
+  font-size:clamp(1rem,1.8vw,1.15rem);
+  color:var(--white-60);
+  line-height:1.75;
+  font-weight:400;
+  max-width:520px;
+}
 
-  /* ─── HERO ───────────────────────────────────────────── */
-  .hero {
-    min-height: 100vh;
-    display: flex; align-items: center;
-    padding-top: 120px; padding-bottom: 80px;
-    position: relative; overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 55% at 70% 50%, rgba(0,255,136,.08) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,107,0,.06) 0%, transparent 65%);
-  }
-  .hero-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-  }
-  .hero .container {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
-  }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-    color: var(--green); margin-bottom: 24px;
-  }
-  .hero-tag::before {
-    content: ''; width: 8px; height: 8px; border-radius: 50%;
-    background: var(--green); animation: pulse 1.8s infinite;
-  }
-  .hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 7vw, 6rem);
-    letter-spacing: .02em; line-height: 1;
-    margin-bottom: 22px;
-  }
-  .hero h1 .accent { color: var(--green); }
-  .hero h1 .accent-o { color: var(--orange); }
-  .hero-sub {
-    color: #aaa; font-size: 1.1rem; line-height: 1.75;
-    margin-bottom: 38px; max-width: 480px;
-  }
-  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-  .hero-stat {
-    margin-top: 48px; display: flex; gap: 36px; flex-wrap: wrap;
-  }
-  .stat-item { display: flex; flex-direction: column; gap: 3px; }
-  .stat-num {
-    font-family: var(--font-display); font-size: 2rem; letter-spacing: .03em; color: var(--white);
-  }
-  .stat-num span { color: var(--green); }
-  .stat-lbl { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 28px; border-radius:6px;
+  font-family:var(--font); font-size:14px; font-weight:600;
+  letter-spacing:.01em; cursor:pointer; border:none;
+  transition:all .25s var(--ease);
+  white-space:nowrap;
+}
+.btn-primary {
+  background:var(--cyan); color:#000;
+  box-shadow:0 0 0 0 var(--cyan-glow);
+}
+.btn-primary:hover {
+  background:#fff;
+  box-shadow:0 0 0 8px var(--cyan-dim);
+  transform:translateY(-1px);
+}
+.btn-ghost {
+  background:transparent; color:var(--white);
+  border:1px solid var(--line-mid);
+}
+.btn-ghost:hover {
+  border-color:var(--white-30);
+  background:var(--white-10);
+}
+.btn-red {
+  background:var(--red); color:#fff;
+  box-shadow:0 0 0 0 rgba(255,45,45,.2);
+}
+.btn-red:hover {
+  background:#ff4d4d;
+  box-shadow:0 0 0 8px rgba(255,45,45,.1);
+  transform:translateY(-1px);
+}
+.btn svg { width:16px; height:16px; flex-shrink:0; transition:transform .2s var(--ease); }
+.btn:hover svg { transform:translateX(3px); }
 
-  /* hero visual */
-  .hero-visual {
-    position: relative; display: flex; flex-direction: column; gap: 16px;
-  }
-  .thumb-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px; overflow: hidden;
-    transition: transform var(--trans), border-color var(--trans);
-  }
-  .thumb-card:hover { transform: translateY(-4px); border-color: rgba(0,255,136,.25); }
-  .thumb-card-img {
-    width: 100%; aspect-ratio: 16/9;
-    background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-  }
-  .thumb-card-img .play { font-size: 2.5rem; opacity: .3; }
-  .thumb-fake-content {
-    width: 80%; height: 50%; background: linear-gradient(90deg, #2a2a2a, #333);
-    border-radius: 6px;
-  }
-  .thumb-card-meta {
-    padding: 12px 16px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .thumb-card-label { font-size: .78rem; color: var(--muted); }
-  .ctr-badge {
-    font-size: .75rem; font-weight: 700; letter-spacing: .06em;
-    padding: 3px 10px; border-radius: 99px;
-    background: rgba(0,255,136,.12); color: var(--green);
-  }
-  .ctr-badge.bad { background: rgba(255,60,60,.12); color: #ff6060; }
-  .thumb-card:nth-child(2) { transform: scale(.95); opacity: .7; }
-  .thumb-card:nth-child(2):hover { transform: scale(.97); opacity: .9; }
+/* ═══════════════════════════════════════════
+   STICKY FLOAT CTA
+═══════════════════════════════════════════ */
+.float-cta {
+  position:fixed; bottom:24px; right:24px; z-index:1000;
+  display:flex; align-items:center; gap:9px;
+  background:var(--cyan); color:#000;
+  padding:13px 22px; border-radius:40px;
+  font-size:13px; font-weight:700; letter-spacing:.01em;
+  box-shadow:0 8px 32px rgba(0,229,255,.25), 0 0 0 1px rgba(0,229,255,.15);
+  cursor:pointer; border:none;
+  transition:all .25s var(--ease);
+  animation:slideUp .5s 1.2s var(--ease) both;
+}
+.float-cta:hover { background:#fff; transform:translateY(-2px); box-shadow:0 12px 40px rgba(0,229,255,.35); }
+.float-cta .dot {
+  width:7px; height:7px; border-radius:50%;
+  background:rgba(0,0,0,.4); animation:blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
-  /* ─── PROBLEM ────────────────────────────────────────── */
-  .problem { background: var(--bg2); }
-  .problem .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-  .problem-lines { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
-  .problem-line {
-    display: flex; align-items: flex-start; gap: 18px;
-    padding: 22px 0; border-bottom: 1px solid var(--border);
-    animation: fadeUp .5s both;
-  }
-  .problem-line:last-child { border-bottom: none; }
-  .problem-num {
-    font-family: var(--font-display); font-size: 2.2rem; color: var(--orange);
-    line-height: 1; flex-shrink: 0; width: 48px;
-  }
-  .problem-line-text strong { display: block; font-size: 1.05rem; margin-bottom: 5px; }
-  .problem-line-text span { color: var(--muted); font-size: .9rem; }
-  .problem-cta-block {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 32px;
-    margin-top: 40px;
-  }
-  .problem-cta-block h3 {
-    font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 12px;
-  }
-  .problem-cta-block p { color: var(--muted); font-size: .95rem; margin-bottom: 22px; }
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 5%; height:64px;
+  background:rgba(5,5,5,.8);
+  backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--line);
+}
+.nav-logo {
+  font-size:14px; font-weight:700; letter-spacing:-.01em;
+  color:var(--white);
+}
+.nav-logo span { color:var(--cyan); }
+.nav-links {
+  display:flex; align-items:center; gap:32px;
+}
+.nav-links a {
+  font-size:13px; font-weight:500; color:var(--white-60);
+  transition:color .2s;
+}
+.nav-links a:hover { color:var(--white); }
+@media(max-width:640px){
+  .nav-links { display:none; }
+}
 
-  /* ─── BEFORE / AFTER ─────────────────────────────────── */
-  .ba-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-    margin-top: 52px;
-  }
-  .ba-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden;
-    transition: transform var(--trans), border-color var(--trans);
-  }
-  .ba-card:hover { transform: translateY(-5px); border-color: rgba(0,255,136,.2); }
-  .ba-img {
-    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
-    font-size: .85rem; font-weight: 600; letter-spacing: .08em;
-    text-transform: uppercase; color: rgba(255,255,255,.3);
-    position: relative;
-  }
-  .ba-img.before {
-    background: linear-gradient(135deg, #1c1c1c, #242424);
-    border-bottom: 1px solid var(--border);
-  }
-  .ba-img.after {
-    background: linear-gradient(135deg, #0d1f14, #0f2319);
-    border-bottom: 1px solid rgba(0,255,136,.12);
-  }
-  .ba-label-float {
-    position: absolute; top: 10px; left: 10px;
-    font-size: .7rem; font-weight: 700; letter-spacing: .1em;
-    padding: 3px 10px; border-radius: 99px; text-transform: uppercase;
-  }
-  .ba-label-float.b { background: rgba(255,60,60,.18); color: #ff6060; }
-  .ba-label-float.a { background: rgba(0,255,136,.18); color: var(--green); }
-  .ba-body { padding: 18px 20px; }
-  .ba-title { font-weight: 700; font-size: .95rem; margin-bottom: 12px; }
-  .ba-metrics { display: flex; gap: 16px; }
-  .ba-metric { display: flex; flex-direction: column; gap: 2px; }
-  .ba-metric-val { font-family: var(--font-display); font-size: 1.5rem; }
-  .ba-metric-val.green { color: var(--green); }
-  .ba-metric-lbl { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-  .ba-arrow {
-    text-align: center; padding: 6px 0;
-    font-size: 1.2rem; color: var(--green); opacity: .6;
-  }
+/* ═══════════════════════════════════════════
+   ① HERO
+═══════════════════════════════════════════ */
+.hero {
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-top:120px; padding-bottom:80px;
+  position:relative; overflow:hidden;
+}
+.hero-glow {
+  position:absolute; top:10%; right:-10%;
+  width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle, rgba(0,229,255,.07) 0%, transparent 65%);
+  pointer-events:none;
+}
+.hero-glow-2 {
+  position:absolute; bottom:-5%; left:-5%;
+  width:400px; height:400px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,45,45,.05) 0%, transparent 65%);
+  pointer-events:none;
+}
+/* Horizontal rule lines bg */
+.hero-lines {
+  position:absolute; inset:0; overflow:hidden; pointer-events:none;
+}
+.hero-lines::before, .hero-lines::after {
+  content:'';
+  position:absolute; left:0; right:0; height:1px; background:var(--line);
+}
+.hero-lines::before { top:33.3%; }
+.hero-lines::after { top:66.6%; }
 
-  /* ─── OFFER ──────────────────────────────────────────── */
-  .offer { background: var(--bg2); }
-  .offer .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .offer-benefits { margin-top: 32px; display: flex; flex-direction: column; gap: 14px; }
-  .benefit-row {
-    display: flex; align-items: flex-start; gap: 14px;
-    padding: 16px 18px; border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    transition: border-color var(--trans), transform var(--trans);
-  }
-  .benefit-row:hover { border-color: rgba(0,255,136,.25); transform: translateX(4px); }
-  .benefit-icon {
-    width: 36px; height: 36px; border-radius: 8px;
-    background: rgba(0,255,136,.1); display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 1rem;
-  }
-  .benefit-row strong { display: block; font-size: .95rem; margin-bottom: 3px; }
-  .benefit-row span { font-size: .85rem; color: var(--muted); }
-  .offer-visual {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; padding: 40px 36px; text-align: center;
-    position: relative;
-  }
-  .offer-visual::before {
-    content: '';
-    position: absolute; inset: -1px; border-radius: 20px;
-    background: linear-gradient(135deg, rgba(0,255,136,.2), transparent 60%);
-    z-index: -1;
-  }
-  .offer-big-num {
-    font-family: var(--font-display); font-size: 5rem;
-    color: var(--green); line-height: 1;
-    margin-bottom: 8px;
-  }
-  .offer-big-num span { font-size: 2.5rem; }
-  .offer-visual p { color: var(--muted); font-size: .95rem; margin-top: 6px; }
-  .offer-divider {
-    width: 40px; height: 2px; background: var(--border);
-    margin: 20px auto;
-  }
+.hero-inner { max-width:var(--max); margin:0 auto; width:100%; padding:0 5%; }
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--red-dim); border:1px solid rgba(255,45,45,.18);
+  padding:7px 14px; border-radius:4px; margin-bottom:36px;
+  font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--red);
+}
+.hero-kicker::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--red); animation:blink 1.8s infinite;
+}
+.hero h1 { margin-bottom:28px; max-width:800px; }
+.hero h1 em { font-style:normal; color:var(--cyan); }
+.hero h1 .red-word { color:var(--red); }
+.hero .lead { margin-bottom:44px; }
+.hero-ctas { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+.hero-note {
+  margin-top:16px;
+  font-size:12px; color:var(--white-30); letter-spacing:.02em;
+}
 
-  /* ─── CASE STUDY ─────────────────────────────────────── */
-  .case { background: var(--bg3); }
-  .case-card {
-    margin-top: 48px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; overflow: hidden;
-    display: grid; grid-template-columns: 1fr 1fr;
-  }
-  .case-visual {
-    background: linear-gradient(135deg, #0a1f12, #0d2918);
-    padding: 48px 40px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    border-right: 1px solid var(--border);
-    position: relative; overflow: hidden;
-  }
-  .case-visual::before {
-    content: '';
-    position: absolute; top: -40px; right: -40px;
-    width: 200px; height: 200px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,255,136,.15) 0%, transparent 70%);
-  }
-  .case-channel { font-size: .8rem; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .1em; }
-  .case-channel-name { font-family: var(--font-display); font-size: 2rem; margin-bottom: 32px; }
-  .case-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .case-metric { }
-  .case-metric-val { font-family: var(--font-display); font-size: 2.2rem; color: var(--green); line-height: 1; }
-  .case-metric-lbl { font-size: .78rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .08em; }
-  .case-body { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; }
-  .case-quote {
-    font-size: 1.15rem; line-height: 1.75; color: #ccc;
-    margin-bottom: 28px; font-style: italic;
-  }
-  .case-quote::before { content: '"'; color: var(--green); font-size: 2rem; line-height: 0; vertical-align: -.4em; margin-right: 4px; }
-  .case-author { display: flex; align-items: center; gap: 14px; }
-  .case-avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, #2a2a2a, #333);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; flex-shrink: 0;
-  }
-  .case-author-name { font-weight: 700; font-size: .95rem; }
-  .case-author-sub { font-size: .8rem; color: var(--muted); }
+.hero-metrics {
+  margin-top:80px; padding-top:40px;
+  border-top:1px solid var(--line);
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--line);
+  border-bottom:1px solid var(--line);
+  max-width:var(--max);
+}
+.metric-block {
+  background:var(--bg);
+  padding:32px 36px;
+  display:flex; flex-direction:column; gap:6px;
+  transition:background .2s;
+}
+.metric-block:hover { background:var(--surface); }
+.metric-val {
+  font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:800;
+  letter-spacing:-.04em; line-height:1;
+  color:var(--white);
+}
+.metric-val span { color:var(--cyan); }
+.metric-lbl {
+  font-size:12px; font-weight:500;
+  color:var(--white-30); letter-spacing:.06em; text-transform:uppercase;
+}
+@media(max-width:600px){
+  .hero-metrics { grid-template-columns:repeat(3,1fr); }
+  .metric-block { padding:24px 20px; }
+}
 
-  /* ─── PRICING ────────────────────────────────────────── */
-  .pricing-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
-    margin-top: 52px; max-width: 720px; margin-left: auto; margin-right: auto;
-  }
-  .price-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; padding: 36px 32px;
-    transition: transform var(--trans);
-    position: relative;
-  }
-  .price-card:hover { transform: translateY(-5px); }
-  .price-card.featured {
-    border-color: var(--green);
-    background: linear-gradient(145deg, #0d1f14, var(--surface));
-    box-shadow: 0 0 60px rgba(0,255,136,.12);
-  }
-  .price-badge {
-    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-    background: var(--green); color: #000;
-    font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
-    padding: 5px 16px; border-radius: 99px;
-    white-space: nowrap;
-  }
-  .price-name { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 12px; }
-  .price-amount {
-    font-family: var(--font-display); font-size: 3.5rem; line-height: 1; margin-bottom: 6px;
-  }
-  .price-amount sup { font-size: 1.5rem; vertical-align: top; margin-top: .5rem; }
-  .price-amount .per { font-size: 1rem; color: var(--muted); font-family: var(--font-body); }
-  .price-original { font-size: .85rem; color: var(--muted); text-decoration: line-through; margin-bottom: 20px; }
-  .price-savings {
-    display: inline-block; background: rgba(0,255,136,.1); color: var(--green);
-    font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 22px;
-  }
-  .price-features { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
-  .price-feature { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
-  .price-feature::before {
-    content: '✓'; width: 20px; height: 20px; border-radius: 50%;
-    background: rgba(0,255,136,.15); color: var(--green);
-    display: flex; align-items: center; justify-content: center;
-    font-size: .7rem; font-weight: 900; flex-shrink: 0;
-  }
-  .price-card.featured .price-feature::before { background: rgba(0,255,136,.25); }
+/* ═══════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════ */
+.section-rule {
+  width:100%; height:1px;
+  background:linear-gradient(90deg, transparent, var(--line-mid) 30%, var(--line-mid) 70%, transparent);
+}
 
-  /* ─── RISK REVERSAL ──────────────────────────────────── */
-  .risk { background: var(--bg2); }
-  .risk-inner {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; padding: 60px 48px;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
-    position: relative; overflow: hidden;
-  }
-  .risk-inner::before {
-    content: '';
-    position: absolute; top: -80px; left: -80px;
-    width: 300px; height: 300px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,107,0,.08) 0%, transparent 70%);
-  }
-  .risk-shields { display: flex; flex-direction: column; gap: 20px; }
-  .shield {
-    display: flex; align-items: flex-start; gap: 16px;
-    padding: 20px; border-radius: 12px;
-    background: rgba(255,255,255,.03); border: 1px solid var(--border);
-    transition: border-color var(--trans);
-  }
-  .shield:hover { border-color: rgba(255,107,0,.3); }
-  .shield-icon {
-    font-size: 1.6rem; flex-shrink: 0;
-    width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
-    background: rgba(255,107,0,.1); border-radius: 10px;
-  }
-  .shield strong { display: block; font-size: .95rem; margin-bottom: 5px; }
-  .shield span { color: var(--muted); font-size: .85rem; }
-  .risk-headline { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; margin-bottom: 18px; }
-  .risk-headline .accent { color: var(--orange); }
+/* ═══════════════════════════════════════════
+   ② PROBLEM
+═══════════════════════════════════════════ */
+.problem { background:var(--bg-1); }
+.problem-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;
+  margin-top:64px;
+}
+.problem-issues { display:flex; flex-direction:column; }
+.issue-row {
+  display:grid; grid-template-columns:48px 1fr; gap:20px;
+  padding:28px 0; border-bottom:1px solid var(--line);
+  transition:all .2s;
+}
+.issue-row:first-child { border-top:1px solid var(--line); }
+.issue-row:hover { background:var(--white-10); margin:0 -16px; padding:28px 16px; }
+.issue-index {
+  font-size:11px; font-weight:700; color:var(--white-30);
+  letter-spacing:.08em; padding-top:3px;
+}
+.issue-content h4 { margin-bottom:6px; font-size:.95rem; }
+.issue-content p { font-size:.875rem; color:var(--white-60); line-height:1.65; }
+.issue-content .pain { color:var(--red); font-weight:600; }
 
-  /* ─── PROCESS ────────────────────────────────────────── */
-  .process-steps {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-    margin-top: 52px; position: relative;
-  }
-  .process-steps::before {
-    content: '';
-    position: absolute; top: 32px; left: 16.6%; right: 16.6%; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), var(--green), var(--border), transparent);
-  }
-  .step {
-    text-align: center; padding: 36px 28px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; transition: border-color var(--trans), transform var(--trans);
-    position: relative;
-  }
-  .step:hover { border-color: rgba(0,255,136,.3); transform: translateY(-4px); }
-  .step-num {
-    font-family: var(--font-display); font-size: 3rem; color: var(--green);
-    line-height: 1; margin-bottom: 16px;
-  }
-  .step h3 { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
-  .step p { color: var(--muted); font-size: .88rem; line-height: 1.6; }
+.problem-callout {
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px; padding:40px;
+  position:sticky; top:100px;
+}
+.callout-stat {
+  font-size:clamp(3rem,5vw,4.5rem); font-weight:800;
+  letter-spacing:-.05em; line-height:1; color:var(--white);
+  margin-bottom:4px;
+}
+.callout-stat span { color:var(--red); }
+.callout-sub {
+  font-size:.875rem; color:var(--white-60); margin-bottom:36px;
+  line-height:1.6;
+}
+.callout-note {
+  padding-top:28px; border-top:1px solid var(--line);
+  font-size:.8rem; color:var(--white-30); line-height:1.7;
+}
 
-  /* ─── URGENCY ────────────────────────────────────────── */
-  .urgency {
-    background: linear-gradient(135deg, #0a0a0a, #111);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    text-align: center; padding: 80px 5%;
-  }
-  .urgency-pill {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: rgba(255,107,0,.1); border: 1px solid rgba(255,107,0,.3);
-    color: var(--orange); padding: 8px 20px; border-radius: 99px;
-    font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em;
-    margin-bottom: 28px;
-  }
-  .urgency-pill::before {
-    content: ''; width: 8px; height: 8px; border-radius: 50%;
-    background: var(--orange); animation: pulse 1.5s infinite;
-  }
-  .urgency h2 { font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 16px; }
-  .urgency h2 span { color: var(--orange); }
-  .urgency p { color: var(--muted); max-width: 500px; margin: 0 auto 36px; }
-  .slots { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 38px; }
-  .slot {
-    width: 44px; height: 18px; border-radius: 4px;
-    border: 1px solid var(--border);
-  }
-  .slot.taken { background: rgba(255,107,0,.6); border-color: transparent; }
-  .slot.open { background: rgba(0,255,136,.2); border-color: rgba(0,255,136,.3); }
+@media(max-width:860px){
+  .problem-grid { grid-template-columns:1fr; gap:48px; }
+  .problem-callout { position:static; }
+}
 
-  /* ─── FINAL CTA ──────────────────────────────────────── */
-  .finalcta {
-    background: var(--bg);
-    text-align: center;
-    padding: 120px 5%;
-    position: relative; overflow: hidden;
-  }
-  .finalcta::before {
-    content: '';
-    position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 600px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,255,136,.07) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .finalcta h2 { font-size: clamp(2.2rem, 6vw, 5rem); margin-bottom: 18px; }
-  .finalcta h2 .green { color: var(--green); }
-  .finalcta p { color: var(--muted); max-width: 500px; margin: 0 auto 42px; font-size: 1.05rem; }
-  .final-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-  .btn-wa {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: #25D366; color: #fff;
-    padding: 15px 30px; border-radius: 10px;
-    font-weight: 700; font-size: 1rem;
-    transition: all var(--trans);
-  }
-  .btn-wa:hover { background: #1ebe5b; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,211,102,.3); }
+/* ═══════════════════════════════════════════
+   ③ BEFORE / AFTER
+═══════════════════════════════════════════ */
+.ba { background:var(--bg-2); }
+.ba-header {
+  display:flex; align-items:flex-end; justify-content:space-between;
+  flex-wrap:wrap; gap:24px; margin-bottom:56px;
+}
+.ba-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:var(--line); border:1px solid var(--line); border-radius:10px;
+  overflow:hidden;
+}
+.ba-card { background:var(--surface); display:flex; flex-direction:column; }
+.ba-visual {
+  aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.ba-visual.before {
+  background:linear-gradient(135deg,#111 0%,#161616 100%);
+  border-bottom:1px solid var(--line);
+}
+.ba-visual.after {
+  background:linear-gradient(135deg,#001a20 0%,#00101a 100%);
+  border-bottom:1px solid rgba(0,229,255,.08);
+}
+.ba-visual-inner {
+  width:75%; height:55%; border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.ba-visual.before .ba-visual-inner {
+  background:rgba(255,255,255,.04); color:var(--white-30);
+  border:1px dashed rgba(255,255,255,.08);
+}
+.ba-visual.after .ba-visual-inner {
+  background:rgba(0,229,255,.06); color:rgba(0,229,255,.5);
+  border:1px dashed rgba(0,229,255,.15);
+}
+.ba-chip {
+  position:absolute; top:10px; left:10px;
+  font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 9px; border-radius:3px;
+}
+.ba-chip.b { background:rgba(255,45,45,.15); color:var(--red); border:1px solid rgba(255,45,45,.2); }
+.ba-chip.a { background:rgba(0,229,255,.12); color:var(--cyan); border:1px solid rgba(0,229,255,.2); }
+.ba-sep {
+  display:flex; align-items:center; justify-content:center;
+  padding:10px; font-size:10px; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--white-30);
+  border-bottom:1px solid var(--line); gap:8px;
+}
+.ba-sep::before,.ba-sep::after { content:''; flex:1; height:1px; background:var(--line); }
+.ba-body { padding:22px 24px; flex:1; }
+.ba-body .niche { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--white-30); margin-bottom:14px; }
+.ba-delta { display:flex; gap:24px; }
+.ba-delta-item { display:flex; flex-direction:column; gap:3px; }
+.ba-delta-val { font-size:1.5rem; font-weight:800; letter-spacing:-.03em; line-height:1; color:var(--cyan); }
+.ba-delta-lbl { font-size:11px; font-weight:500; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; }
+.ba-old { color:var(--white-30); font-size:.8rem; margin-top:10px; }
+.ba-old span { text-decoration:line-through; }
 
-  /* ─── FOOTER ─────────────────────────────────────────── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 5%;
-    display: flex; align-items: center; justify-content: space-between;
-    color: var(--muted); font-size: .82rem; flex-wrap: wrap; gap: 12px;
-  }
+@media(max-width:780px){
+  .ba-grid { grid-template-columns:1fr; max-width:420px; margin:0 auto; }
+}
 
-  /* ─── ANIMATIONS ─────────────────────────────────────── */
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: .5; transform: scale(1.5); }
-  }
-  @keyframes floatIn {
-    from { opacity: 0; transform: translateY(20px) scale(.95); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .reveal {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity .65s ease, transform .65s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+/* ═══════════════════════════════════════════
+   ④ OFFER / SERVICE
+═══════════════════════════════════════════ */
+.offer { background:var(--bg-1); }
+.offer-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-top:64px; }
+.offer-benefits { display:flex; flex-direction:column; gap:0; margin-top:8px; }
+.benefit {
+  display:flex; align-items:flex-start; gap:20px;
+  padding:24px 0; border-bottom:1px solid var(--line);
+}
+.benefit:first-child { border-top:1px solid var(--line); }
+.benefit-icon {
+  width:40px; height:40px; border-radius:6px;
+  background:var(--cyan-dim); border:1px solid rgba(0,229,255,.12);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:18px;
+}
+.benefit-text h4 { margin-bottom:4px; font-size:.9rem; }
+.benefit-text p { font-size:.85rem; color:var(--white-60); line-height:1.6; }
 
-  /* ─── RESPONSIVE ─────────────────────────────────────── */
-  @media (max-width: 900px) {
-    .hero .container,
-    .problem .container,
-    .offer .container,
-    .case-card,
-    .risk-inner { grid-template-columns: 1fr; gap: 40px; }
-    .hero-visual { display: none; }
-    .ba-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
-    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
-    .process-steps { grid-template-columns: 1fr; }
-    .process-steps::before { display: none; }
-    .case-visual { border-right: none; border-bottom: 1px solid var(--border); }
-  }
-  @media (max-width: 600px) {
-    section { padding: 70px 5%; }
-    nav { padding: 14px 5%; }
-    .risk-inner { padding: 36px 24px; }
-  }
+.offer-panel {
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; overflow:hidden;
+  position:sticky; top:100px;
+}
+.offer-panel-top {
+  padding:36px; border-bottom:1px solid var(--line);
+}
+.offer-panel-top h3 { margin-bottom:12px; font-size:1.1rem; }
+.offer-panel-top p { font-size:.875rem; color:var(--white-60); line-height:1.7; }
+.offer-kpis {
+  padding:28px 36px; display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--line); border-bottom:1px solid var(--line);
+}
+.offer-kpi { background:var(--surface); padding:20px; }
+.offer-kpi-val { font-size:1.8rem; font-weight:800; letter-spacing:-.04em; color:var(--cyan); line-height:1; }
+.offer-kpi-lbl { font-size:11px; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; margin-top:4px; }
+.offer-panel-cta { padding:28px 36px; }
+
+@media(max-width:860px){
+  .offer-grid { grid-template-columns:1fr; gap:48px; }
+  .offer-panel { position:static; }
+}
+
+/* ═══════════════════════════════════════════
+   ⑤ CASE STUDY
+═══════════════════════════════════════════ */
+.case { background:var(--bg-2); }
+.case-block {
+  margin-top:56px; border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:grid; grid-template-columns:1fr 1fr;
+}
+.case-data {
+  background:var(--surface-2);
+  padding:56px 48px;
+  border-right:1px solid var(--line);
+  display:flex; flex-direction:column; justify-content:space-between;
+  gap:40px;
+}
+.case-channel-label { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--white-30); margin-bottom:8px; }
+.case-channel-name { font-size:clamp(1.6rem,3vw,2.2rem); font-weight:800; letter-spacing:-.03em; }
+.case-results { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+.case-result { background:var(--surface-2); padding:22px 20px; }
+.case-result-val { font-size:1.9rem; font-weight:800; letter-spacing:-.04em; line-height:1; color:var(--cyan); }
+.case-result-val.red { color:var(--red); font-size:1.2rem; }
+.case-result-lbl { font-size:11px; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; margin-top:4px; }
+
+.case-story { padding:56px 48px; display:flex; flex-direction:column; justify-content:space-between; gap:36px; }
+.case-context { font-size:.95rem; color:var(--white-60); line-height:1.8; }
+.case-context strong { color:var(--white); font-weight:600; }
+.case-context .num { color:var(--cyan); font-weight:700; }
+.case-author-row { display:flex; align-items:center; gap:16px; padding-top:28px; border-top:1px solid var(--line); }
+.case-avatar {
+  width:44px; height:44px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
+}
+.case-author-name { font-size:.9rem; font-weight:600; }
+.case-author-meta { font-size:.8rem; color:var(--white-30); margin-top:2px; }
+
+@media(max-width:760px){
+  .case-block { grid-template-columns:1fr; }
+  .case-data { border-right:none; border-bottom:1px solid var(--line); padding:40px 28px; }
+  .case-story { padding:40px 28px; }
+}
+
+/* ═══════════════════════════════════════════
+   ⑥ PRICING
+═══════════════════════════════════════════ */
+.pricing { background:var(--bg-1); }
+.pricing-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:20px; margin-bottom:56px; }
+.pricing-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:8px;
+  overflow:hidden;
+  max-width:760px; margin:0 auto;
+}
+.price-card {
+  background:var(--surface);
+  padding:44px 40px;
+  display:flex; flex-direction:column;
+  transition:background .2s;
+}
+.price-card:hover { background:var(--surface-2); }
+.price-card.featured {
+  background:var(--bg);
+  position:relative;
+}
+.price-card.featured::before {
+  content:'BEST VALUE';
+  position:absolute; top:0; left:0; right:0;
+  height:3px; background:var(--cyan);
+}
+.price-label {
+  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--white-30); margin-bottom:20px;
+}
+.price-label.featured-label { color:var(--cyan); }
+.price-amount {
+  font-size:clamp(2.5rem,5vw,3.5rem); font-weight:800;
+  letter-spacing:-.05em; line-height:1; margin-bottom:4px;
+}
+.price-amount sup { font-size:1.2rem; vertical-align:top; margin-top:.6rem; font-weight:500; color:var(--white-60); }
+.price-sub { font-size:.85rem; color:var(--white-30); margin-bottom:6px; }
+.price-was { font-size:.8rem; color:var(--white-30); margin-bottom:28px; }
+.price-was s { color:var(--red); }
+.price-was strong { color:var(--cyan); font-weight:600; }
+.price-divider { height:1px; background:var(--line); margin-bottom:28px; }
+.price-features { display:flex; flex-direction:column; gap:13px; margin-bottom:36px; flex:1; }
+.price-feature {
+  display:flex; align-items:flex-start; gap:12px;
+  font-size:.875rem; color:var(--white-60);
+}
+.price-feature::before {
+  content:''; width:16px; height:16px; border-radius:3px;
+  background:var(--cyan-dim); border:1px solid rgba(0,229,255,.15);
+  display:flex; flex-shrink:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 8l3.5 3.5L13 5' stroke='%2300E5FF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size:contain; background-repeat:no-repeat;
+  margin-top:1px;
+}
+
+@media(max-width:640px){
+  .pricing-grid { grid-template-columns:1fr; max-width:400px; }
+}
+
+/* ═══════════════════════════════════════════
+   ⑦ RISK REVERSAL
+═══════════════════════════════════════════ */
+.risk { background:var(--bg-2); }
+.risk-inner {
+  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
+  margin-top:64px;
+}
+.risk-headline { font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:800; letter-spacing:-.03em; line-height:1.1; margin-bottom:20px; }
+.risk-headline em { font-style:normal; color:var(--cyan); }
+.risk-sub { font-size:.95rem; color:var(--white-60); line-height:1.75; margin-bottom:36px; }
+.risk-panels { display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+.risk-panel {
+  background:var(--surface); padding:28px 32px;
+  display:flex; gap:20px; align-items:flex-start;
+  transition:background .2s;
+}
+.risk-panel:hover { background:var(--surface-2); }
+.risk-panel-icon {
+  width:44px; height:44px; border-radius:6px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+  background:var(--cyan-dim); border:1px solid rgba(0,229,255,.1);
+}
+.risk-panel h4 { margin-bottom:5px; font-size:.9rem; }
+.risk-panel p { font-size:.83rem; color:var(--white-60); line-height:1.65; }
+
+@media(max-width:860px){
+  .risk-inner { grid-template-columns:1fr; gap:48px; }
+}
+
+/* ═══════════════════════════════════════════
+   ⑧ PROCESS
+═══════════════════════════════════════════ */
+.process { background:var(--bg-1); }
+.process-steps {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; margin-top:56px;
+}
+.step {
+  background:var(--surface);
+  padding:40px 36px;
+  display:flex; flex-direction:column; gap:20px;
+  position:relative; transition:background .2s;
+}
+.step:hover { background:var(--surface-2); }
+.step-num {
+  font-size:11px; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--cyan);
+  display:flex; align-items:center; gap:8px;
+}
+.step-num::after { content:''; flex:1; max-width:32px; height:1px; background:rgba(0,229,255,.3); }
+.step h3 { font-size:1.05rem; font-weight:700; margin-bottom:0; }
+.step p { font-size:.875rem; color:var(--white-60); line-height:1.65; }
+
+@media(max-width:640px){
+  .process-steps { grid-template-columns:1fr; }
+}
+
+/* ═══════════════════════════════════════════
+   ⑨ URGENCY
+═══════════════════════════════════════════ */
+.urgency {
+  background:var(--bg-2);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  text-align:center; padding:100px 5%;
+}
+.urgency-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--red-dim); border:1px solid rgba(255,45,45,.2);
+  padding:7px 16px; border-radius:4px; margin-bottom:32px;
+  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--red);
+}
+.urgency-badge::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--red); animation:blink 1.5s infinite;
+}
+.urgency h2 { margin-bottom:16px; }
+.urgency h2 span { color:var(--red); }
+.urgency .lead { margin:0 auto 40px; }
+.slots-row { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:40px; }
+.slot { width:36px; height:10px; border-radius:2px; }
+.slot.taken { background:rgba(255,45,45,.5); }
+.slot.open { background:rgba(0,229,255,.25); border:1px solid rgba(0,229,255,.2); }
+.slots-label { font-size:12px; color:var(--white-30); margin-top:10px; margin-bottom:40px; letter-spacing:.04em; }
+
+/* ═══════════════════════════════════════════
+   ⑩ FINAL CTA
+═══════════════════════════════════════════ */
+.final { background:var(--bg); text-align:center; padding:140px 5%; position:relative; overflow:hidden; }
+.final-glow {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:700px; height:400px;
+  background:radial-gradient(ellipse, rgba(0,229,255,.06) 0%, transparent 65%);
+  pointer-events:none;
+}
+.final h2 { margin-bottom:18px; }
+.final h2 em { font-style:normal; color:var(--cyan); }
+.final .lead { margin:0 auto 48px; }
+.final-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.btn-wa {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#25D366; color:#fff;
+  padding:14px 28px; border-radius:6px;
+  font-size:14px; font-weight:600; cursor:pointer;
+  transition:all .25s var(--ease);
+}
+.btn-wa:hover { background:#20bc5a; transform:translateY(-1px); box-shadow:0 8px 24px rgba(37,211,102,.2); }
+.btn-wa svg { width:18px; height:18px; }
+.final-meta { margin-top:20px; font-size:12px; color:var(--white-30); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  border-top:1px solid var(--line);
+  padding:28px 5%;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px;
+}
+.footer-logo { font-size:13px; font-weight:700; color:var(--white); }
+.footer-logo span { color:var(--cyan); }
+footer nav { position:static; background:none; backdrop-filter:none; border:none; padding:0; height:auto; }
+footer nav a { font-size:12px; color:var(--white-30); transition:color .2s; }
+footer nav a:hover { color:var(--white); }
+.footer-copy { font-size:12px; color:var(--white-30); }
+
+/* ═══════════════════════════════════════════
+   REVEAL ANIMATIONS
+═══════════════════════════════════════════ */
+.reveal {
+  opacity:0; transform:translateY(20px);
+  transition:opacity .7s var(--ease), transform .7s var(--ease);
+}
+.reveal.up { transform:translateY(28px); }
+.reveal.visible { opacity:1; transform:none; }
+.reveal-delay-1 { transition-delay:.08s; }
+.reveal-delay-2 { transition-delay:.16s; }
+.reveal-delay-3 { transition-delay:.24s; }
+
+/* ═══════════════════════════════════════════
+   CUSTOM SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--line-mid); border-radius:4px; }
+::-webkit-scrollbar-thumb:hover { background:var(--white-30); }
 </style>
 </head>
 <body>
 
-<!-- STICKY CTA -->
-<button class="sticky-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.82a.5.5 0 0 1-.62-.62l.82-2.87a2 2 0 0 1 .506-.856z"/></svg>
-  Get Free Test
+<!-- ── FLOAT CTA ───────────────────────── -->
+<button class="float-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+  <span class="dot"></span>
+  Get Free Sample
 </button>
 
-<!-- NAV -->
+<!-- ── NAV ────────────────────────────── -->
 <nav>
   <span class="nav-logo">Thumb<span>CTR</span></span>
-  <a href="#contact" class="nav-cta">Get Free Thumbnail Test →</a>
+  <div class="nav-links">
+    <a href="#problem">The Problem</a>
+    <a href="#results">Results</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="btn btn-primary" style="padding:10px 20px;font-size:13px;">
+    Get Started
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+  </a>
 </nav>
 
-<!-- ① HERO -->
+<!-- ═══════════════════════════════════════
+   ① HERO
+═══════════════════════════════════════ -->
 <section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="container">
-    <div class="hero-left reveal">
-      <div class="hero-tag">YouTube CTR Specialist</div>
-      <h1>
-        Your Thumbnails<br />Are <span class="accent-o">Killing</span><br />Your <span class="accent">Views</span>
-      </h1>
-      <p class="hero-sub">
-        Most creators obsess over content—but YouTube decides who sees it based on
-        your thumbnail's Click-Through Rate. A bad thumbnail = invisible video,
-        no matter how good it is.
-      </p>
-      <div class="hero-ctas">
-        <a href="#contact" class="btn btn-green">Get Free Thumbnail Test →</a>
-        <a href="#pricing" class="btn btn-outline">See Pricing</a>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-item">
-          <div class="stat-num"><span>3×</span></div>
-          <div class="stat-lbl">Avg CTR increase</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">200<span>+</span></div>
-          <div class="stat-lbl">Thumbnails fixed</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num"><span>$</span>0</div>
-          <div class="stat-lbl">To get started</div>
-        </div>
-      </div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-kicker">Platform CTR is declining</div>
+    <h1 class="reveal">
+      Your thumbnails<br/>
+      are the <em>one variable</em><br/>
+      <span class="red-word">limiting</span> your growth.
+    </h1>
+    <p class="lead reveal reveal-delay-1">
+      YouTube allocates reach based on click-through rate. If your thumbnails underperform,
+      the algorithm deprioritises your content—regardless of its quality.
+      We fix that with rigorous, data-informed creative.
+    </p>
+    <div class="hero-ctas reveal reveal-delay-2">
+      <a href="#contact" class="btn btn-primary" style="font-size:15px;padding:15px 32px;">
+        Request a Free Sample
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+      <a href="#results" class="btn btn-ghost" style="font-size:15px;padding:15px 32px;">View Results</a>
     </div>
-    <div class="hero-visual reveal">
-      <div class="thumb-card">
-        <div class="thumb-card-img">
-          <div class="thumb-fake-content"></div>
-        </div>
-        <div class="thumb-card-meta">
-          <span class="thumb-card-label">After ThumbCTR</span>
-          <span class="ctr-badge">8.2% CTR</span>
-        </div>
-      </div>
-      <div class="thumb-card">
-        <div class="thumb-card-img" style="background:linear-gradient(135deg,#1a1a1a,#1d1d1d);">
-          <div class="thumb-fake-content" style="opacity:.4;"></div>
-        </div>
-        <div class="thumb-card-meta">
-          <span class="thumb-card-label">Before</span>
-          <span class="ctr-badge bad">2.1% CTR</span>
-        </div>
-      </div>
+    <p class="hero-note reveal reveal-delay-3">No payment. No commitment. One thumbnail, delivered free.</p>
+  </div>
+  <div class="hero-metrics reveal">
+    <div class="metric-block">
+      <div class="metric-val"><span>3.1×</span></div>
+      <div class="metric-lbl">Average CTR Improvement</div>
+    </div>
+    <div class="metric-block">
+      <div class="metric-val">200<span>+</span></div>
+      <div class="metric-lbl">Thumbnails Delivered</div>
+    </div>
+    <div class="metric-block">
+      <div class="metric-val"><span>48</span>hr</div>
+      <div class="metric-lbl">Standard Turnaround</div>
     </div>
   </div>
 </section>
 
-<!-- ② PROBLEM -->
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ② PROBLEM
+═══════════════════════════════════════ -->
 <section class="problem" id="problem">
-  <div class="container">
-    <div class="reveal">
-      <div class="label orange">The Real Problem</div>
-      <h2>Why Your Videos<br />Aren't Getting Clicked</h2>
-      <p class="sub">
-        YouTube's algorithm gives your video a test window. If people don't click—it stops pushing it.
-        Your thumbnail is the only thing that makes them click.
-      </p>
-      <div class="problem-cta-block">
-        <h3>Sound familiar?</h3>
-        <p>You spend 20+ hours on a video, upload it, and it gets 300 views. The algorithm didn't kill your video—your thumbnail did.</p>
-        <a href="#contact" class="btn btn-green">Fix My Thumbnails →</a>
-      </div>
-    </div>
-    <div class="problem-lines reveal">
-      <div class="problem-line">
-        <span class="problem-num">01</span>
-        <div class="problem-line-text">
-          <strong>Too much text, no visual hook</strong>
-          <span>Viewers decide in 0.3 seconds. Text-heavy thumbnails get skipped instantly.</span>
+  <div class="wrap">
+    <div class="eyebrow red reveal">Why most channels stall</div>
+    <h2 class="reveal">The CTR problem<br/>nobody talks about.</h2>
+    <div class="problem-grid">
+      <div class="problem-issues reveal">
+        <div class="issue-row">
+          <span class="issue-index">01</span>
+          <div class="issue-content">
+            <h4>The algorithm rewards clicks, not quality.</h4>
+            <p>YouTube measures your content's value by how many people click when shown it. A <span class="pain">low CTR signals low relevance</span>—and distribution is cut accordingly.</p>
+          </div>
+        </div>
+        <div class="issue-row">
+          <span class="issue-index">02</span>
+          <div class="issue-content">
+            <h4>Viewers decide in under 400 milliseconds.</h4>
+            <p>Your thumbnail competes with dozens of others on a single screen. <span class="pain">Designs that don't create immediate pattern interruption get scrolled past</span>, every time.</p>
+          </div>
+        </div>
+        <div class="issue-row">
+          <span class="issue-index">03</span>
+          <div class="issue-content">
+            <h4>Most thumbnails are designed for aesthetics, not behaviour.</h4>
+            <p>Visually polished thumbnails frequently underperform plain, strategically composed ones. <span class="pain">Design intuition and CTR strategy are not the same discipline.</span></p>
+          </div>
+        </div>
+        <div class="issue-row">
+          <span class="issue-index">04</span>
+          <div class="issue-content">
+            <h4>Niche-blind design fails systematically.</h4>
+            <p>What drives clicks in finance differs fundamentally from gaming or health. <span class="pain">Generic creative templates ignore the category-specific cues</span> viewers respond to.</p>
+          </div>
         </div>
       </div>
-      <div class="problem-line">
-        <span class="problem-num">02</span>
-        <div class="problem-line-text">
-          <strong>No emotional trigger</strong>
-          <span>If your thumbnail doesn't spark curiosity, fear, or excitement—it's invisible.</span>
-        </div>
-      </div>
-      <div class="problem-line">
-        <span class="problem-num">03</span>
-        <div class="problem-line-text">
-          <strong>Blending into the feed</strong>
-          <span>Your thumbnail competes with 20 others on screen. Most creators look exactly the same.</span>
-        </div>
-      </div>
-      <div class="problem-line">
-        <span class="problem-num">04</span>
-        <div class="problem-line-text">
-          <strong>Designed for looks, not clicks</strong>
-          <span>Beautiful ≠ high CTR. We design for the algorithm, not just aesthetics.</span>
+      <div class="reveal reveal-delay-1">
+        <div class="problem-callout">
+          <div class="callout-stat"><span>68%</span></div>
+          <div class="callout-sub">of YouTube videos receive fewer than 1,000 views—not because of content quality, but because of poor click-through performance in the algorithm's initial distribution window.</div>
+          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:20px;">
+            Audit My Thumbnails Free
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <div class="callout-note">
+            We will review your last 5 thumbnails, identify the core CTR inhibitors, and deliver one redesigned thumbnail at no cost. You decide whether to continue.
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ③ BEFORE / AFTER -->
-<section id="results">
-  <div class="container">
-    <div class="reveal" style="text-align:center;">
-      <div class="label">Real Results</div>
-      <h2>Before vs After</h2>
-      <p class="sub" style="margin:0 auto;">See exactly what changes—and the numbers that prove it works.</p>
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ③ BEFORE / AFTER
+═══════════════════════════════════════ -->
+<section class="ba" id="results">
+  <div class="wrap">
+    <div class="ba-header">
+      <div>
+        <div class="eyebrow reveal">Documented Results</div>
+        <h2 class="reveal">Before. After.<br/>The numbers.</h2>
+      </div>
+      <p class="lead reveal" style="max-width:340px;">Three representative examples from our client base. CTR data pulled directly from YouTube Studio analytics.</p>
     </div>
-    <div class="ba-grid">
+    <div class="ba-grid reveal">
 
       <!-- Card 1 -->
-      <div class="ba-card reveal">
-        <div class="ba-img before">
-          <span class="ba-label-float b">Before</span>
-          THUMBNAIL PLACEHOLDER
+      <div class="ba-card">
+        <div class="ba-visual before">
+          <div class="ba-visual-inner">Before Thumbnail</div>
+          <span class="ba-chip b">Before</span>
         </div>
-        <div class="ba-arrow">↓</div>
-        <div class="ba-img after">
-          <span class="ba-label-float a">After</span>
-          THUMBNAIL PLACEHOLDER
+        <div class="ba-sep">redesigned</div>
+        <div class="ba-visual after">
+          <div class="ba-visual-inner">After Thumbnail</div>
+          <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
-          <div class="ba-title">Tech Review Channel</div>
-          <div class="ba-metrics">
-            <div class="ba-metric">
-              <div class="ba-metric-val green">7.8%</div>
-              <div class="ba-metric-lbl">New CTR</div>
+          <div class="niche">Technology · Reviews</div>
+          <div class="ba-delta">
+            <div class="ba-delta-item">
+              <div class="ba-delta-val">7.8%</div>
+              <div class="ba-delta-lbl">New CTR</div>
             </div>
-            <div class="ba-metric">
-              <div class="ba-metric-val green">+340%</div>
-              <div class="ba-metric-lbl">Views</div>
+            <div class="ba-delta-item">
+              <div class="ba-delta-val">+340%</div>
+              <div class="ba-delta-lbl">View increase</div>
             </div>
           </div>
+          <div class="ba-old">Previously: <span>2.1% CTR</span></div>
         </div>
       </div>
 
       <!-- Card 2 -->
-      <div class="ba-card reveal">
-        <div class="ba-img before">
-          <span class="ba-label-float b">Before</span>
-          THUMBNAIL PLACEHOLDER
+      <div class="ba-card">
+        <div class="ba-visual before">
+          <div class="ba-visual-inner">Before Thumbnail</div>
+          <span class="ba-chip b">Before</span>
         </div>
-        <div class="ba-arrow">↓</div>
-        <div class="ba-img after">
-          <span class="ba-label-float a">After</span>
-          THUMBNAIL PLACEHOLDER
+        <div class="ba-sep">redesigned</div>
+        <div class="ba-visual after">
+          <div class="ba-visual-inner">After Thumbnail</div>
+          <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
-          <div class="ba-title">Finance / Investing</div>
-          <div class="ba-metrics">
-            <div class="ba-metric">
-              <div class="ba-metric-val green">9.1%</div>
-              <div class="ba-metric-lbl">New CTR</div>
+          <div class="niche">Finance · Personal Investing</div>
+          <div class="ba-delta">
+            <div class="ba-delta-item">
+              <div class="ba-delta-val">9.1%</div>
+              <div class="ba-delta-lbl">New CTR</div>
             </div>
-            <div class="ba-metric">
-              <div class="ba-metric-val green">+510%</div>
-              <div class="ba-metric-lbl">Views</div>
+            <div class="ba-delta-item">
+              <div class="ba-delta-val">+510%</div>
+              <div class="ba-delta-lbl">View increase</div>
             </div>
           </div>
+          <div class="ba-old">Previously: <span>1.5% CTR</span></div>
         </div>
       </div>
 
       <!-- Card 3 -->
-      <div class="ba-card reveal">
-        <div class="ba-img before">
-          <span class="ba-label-float b">Before</span>
-          THUMBNAIL PLACEHOLDER
+      <div class="ba-card">
+        <div class="ba-visual before">
+          <div class="ba-visual-inner">Before Thumbnail</div>
+          <span class="ba-chip b">Before</span>
         </div>
-        <div class="ba-arrow">↓</div>
-        <div class="ba-img after">
-          <span class="ba-label-float a">After</span>
-          THUMBNAIL PLACEHOLDER
+        <div class="ba-sep">redesigned</div>
+        <div class="ba-visual after">
+          <div class="ba-visual-inner">After Thumbnail</div>
+          <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
-          <div class="ba-title">Fitness & Lifestyle</div>
-          <div class="ba-metrics">
-            <div class="ba-metric">
-              <div class="ba-metric-val green">6.4%</div>
-              <div class="ba-metric-lbl">New CTR</div>
+          <div class="niche">Health · Fitness</div>
+          <div class="ba-delta">
+            <div class="ba-delta-item">
+              <div class="ba-delta-val">6.4%</div>
+              <div class="ba-delta-lbl">New CTR</div>
             </div>
-            <div class="ba-metric">
-              <div class="ba-metric-val green">+210%</div>
-              <div class="ba-metric-lbl">Views</div>
+            <div class="ba-delta-item">
+              <div class="ba-delta-val">+210%</div>
+              <div class="ba-delta-lbl">View increase</div>
             </div>
           </div>
+          <div class="ba-old">Previously: <span>2.8% CTR</span></div>
         </div>
       </div>
 
@@ -794,198 +920,258 @@
   </div>
 </section>
 
-<!-- ④ OFFER -->
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ④ OFFER
+═══════════════════════════════════════ -->
 <section class="offer" id="offer">
-  <div class="container">
-    <div class="reveal">
-      <div class="label">What We Do</div>
-      <h2>We Fix CTR—<br />Not Just Design</h2>
-      <p class="sub">Other designers make thumbnails look good. We make thumbnails that get clicked—using psychology, data, and platform patterns.</p>
-      <div class="offer-benefits">
-        <div class="benefit-row">
-          <div class="benefit-icon">🎯</div>
-          <div>
-            <strong>CTR-First Strategy</strong>
-            <span>Every design decision is made to maximize click-through rate, not win design awards.</span>
-          </div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-icon">🧠</div>
-          <div>
-            <strong>Psychological Triggers</strong>
-            <span>Curiosity gaps, contrast, faces, color psychology—all engineered for your niche.</span>
-          </div>
-        </div>
-        <div class="benefit-row">
-          <div class="benefit-icon">📊</div>
-          <div>
-            <strong>A/B Test Ready</strong>
-            <span>We deliver 2 thumbnail variants so YouTube picks the better performer automatically.</span>
-          </div>
-        </div>
-        <div class="benefit-row">
+  <div class="wrap">
+    <div class="eyebrow reveal">What we deliver</div>
+    <h2 class="reveal">Performance creative.<br/>Not just design.</h2>
+    <div class="offer-grid">
+      <div class="offer-benefits reveal">
+        <div class="benefit">
           <div class="benefit-icon">⚡</div>
-          <div>
-            <strong>48-Hour Turnaround</strong>
-            <span>Fast delivery means you never delay publishing because of thumbnails again.</span>
+          <div class="benefit-text">
+            <h4>CTR-First Methodology</h4>
+            <p>Every creative decision—composition, contrast, typography, colour—is made to maximise click-through rate, not aesthetic preference.</p>
           </div>
         </div>
-        <div class="benefit-row">
-          <div class="benefit-icon">🔄</div>
-          <div>
-            <strong>Unlimited Revisions</strong>
-            <span>We iterate until you're fully satisfied. Your approval is non-negotiable.</span>
+        <div class="benefit">
+          <div class="benefit-icon">🔬</div>
+          <div class="benefit-text">
+            <h4>Niche & Competitor Research</h4>
+            <p>We study the top-performing thumbnails in your specific category before touching a single pixel. What works in finance fails in gaming.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">🧪</div>
+          <div class="benefit-text">
+            <h4>Two Variants Per Video</h4>
+            <p>Each delivery includes two distinct thumbnail directions, ready for YouTube's built-in A/B testing. The algorithm selects the winner automatically.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">📐</div>
+          <div class="benefit-text">
+            <h4>Channel Consistency</h4>
+            <p>We develop a thumbnail visual language that compounds over time—recognition in the feed increases repeat clicks from existing subscribers.</p>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">🔁</div>
+          <div class="benefit-text">
+            <h4>Unlimited Revisions</h4>
+            <p>We iterate until the output is right. There is no revision limit, no additional charge, no friction.</p>
           </div>
         </div>
       </div>
-    </div>
-    <div class="offer-visual reveal">
-      <div class="offer-big-num"><span>+</span>312%</div>
-      <p>average CTR improvement<br />across all client thumbnails</p>
-      <div class="offer-divider"></div>
-      <p style="color:var(--muted);font-size:.85rem;line-height:1.7;">
-        Based on aggregated YouTube Analytics data from 200+ thumbnails delivered in 2023–2024. Individual results vary by niche and channel.
-      </p>
-      <div style="margin-top:28px;">
-        <a href="#contact" class="btn btn-green" style="width:100%;justify-content:center;">Start With a Free Test →</a>
+
+      <div class="reveal reveal-delay-1">
+        <div class="offer-panel">
+          <div class="offer-panel-top">
+            <h3>How we're different</h3>
+            <p>Freelance designers produce creative based on aesthetic judgment. We produce creative based on CTR data, behavioural psychology, and platform-specific performance patterns. The distinction is measurable.</p>
+          </div>
+          <div class="offer-kpis">
+            <div class="offer-kpi">
+              <div class="offer-kpi-val">3.1×</div>
+              <div class="offer-kpi-lbl">Avg CTR lift</div>
+            </div>
+            <div class="offer-kpi">
+              <div class="offer-kpi-val">48h</div>
+              <div class="offer-kpi-lbl">Turnaround</div>
+            </div>
+            <div class="offer-kpi">
+              <div class="offer-kpi-val">2</div>
+              <div class="offer-kpi-lbl">Variants per video</div>
+            </div>
+            <div class="offer-kpi">
+              <div class="offer-kpi-val">∞</div>
+              <div class="offer-kpi-lbl">Revisions</div>
+            </div>
+          </div>
+          <div class="offer-panel-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center;font-size:14px;">
+              Start With a Free Sample
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ⑤ CASE STUDY -->
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ⑤ CASE STUDY
+═══════════════════════════════════════ -->
 <section class="case" id="case">
-  <div class="container">
-    <div class="reveal" style="text-align:center;">
-      <div class="label">Case Study</div>
-      <h2>From 1.8% to 9.4% CTR<br />in 3 Thumbnails</h2>
-    </div>
-    <div class="case-card reveal">
-      <div class="case-visual">
+  <div class="wrap">
+    <div class="eyebrow reveal">Case Study</div>
+    <h2 class="reveal">1.8% → 9.4% CTR.<br/>Same content. Different thumbnail.</h2>
+    <div class="case-block reveal">
+      <div class="case-data">
         <div>
-          <div class="case-channel">Client</div>
-          <div class="case-channel-name">TechWith<br />Aarav</div>
+          <div class="case-channel-label">Channel</div>
+          <div class="case-channel-name">TechWith Aarav</div>
         </div>
-        <div class="case-metrics-grid">
-          <div class="case-metric">
-            <div class="case-metric-val">1.8%</div>
-            <div class="case-metric-lbl">Old CTR</div>
+        <div class="case-results">
+          <div class="case-result">
+            <div class="case-result-val red">1.8%</div>
+            <div class="case-result-lbl">CTR Before</div>
           </div>
-          <div class="case-metric">
-            <div class="case-metric-val">9.4%</div>
-            <div class="case-metric-lbl">New CTR</div>
+          <div class="case-result">
+            <div class="case-result-val">9.4%</div>
+            <div class="case-result-lbl">CTR After</div>
           </div>
-          <div class="case-metric">
-            <div class="case-metric-val">42K</div>
-            <div class="case-metric-lbl">Avg Views Before</div>
+          <div class="case-result">
+            <div class="case-result-val" style="font-size:1.3rem;">42K</div>
+            <div class="case-result-lbl">Avg Views Before</div>
           </div>
-          <div class="case-metric">
-            <div class="case-metric-val">218K</div>
-            <div class="case-metric-lbl">Avg Views After</div>
+          <div class="case-result">
+            <div class="case-result-val" style="font-size:1.3rem;">218K</div>
+            <div class="case-result-lbl">Avg Views After</div>
           </div>
         </div>
       </div>
-      <div class="case-body">
-        <p class="case-quote">
-          I was posting consistently for 2 years and stuck at 40K views per video.
-          Three thumbnails in, my next video hit 200K. I genuinely thought my channel was broken before this.
-        </p>
-        <div class="case-author">
+      <div class="case-story">
+        <div>
+          <p class="case-context">
+            Aarav had been publishing weekly for <strong>two years</strong>, averaging <strong>40–50K views per video</strong>.
+            His content quality was high—his CTR was not. At <span class="num">1.8%</span>, YouTube's distribution algorithm
+            treated his videos as low-engagement content and throttled reach accordingly.<br/><br/>
+            After a thumbnail audit, we identified three structural issues: visual clutter at small sizes,
+            a colour palette that blended into the YouTube feed, and a lack of immediate curiosity framing.
+            We rebuilt his thumbnail system from scratch.<br/><br/>
+            His next video hit <span class="num">218K views</span>. The video after that, <span class="num">190K</span>.
+            His channel average CTR stabilised at <span class="num">8.7%</span> over the following quarter—
+            a number the algorithm rewards with sustained distribution.
+          </p>
+        </div>
+        <div class="case-author-row">
           <div class="case-avatar">👨‍💻</div>
           <div>
-            <div class="case-author-name">Aarav S.</div>
-            <div class="case-author-sub">Tech creator · 280K subscribers</div>
+            <div class="case-author-name">Aarav S. — Tech Creator</div>
+            <div class="case-author-meta">280K subscribers · Case data verified from YouTube Studio</div>
           </div>
-        </div>
-        <div style="margin-top:28px;">
-          <a href="#contact" class="btn btn-green">Get Results Like This →</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ⑥ PRICING -->
-<section id="pricing">
-  <div class="container">
-    <div class="reveal" style="text-align:center;">
-      <div class="label">Pricing</div>
-      <h2>Simple, Transparent<br />Pricing</h2>
-      <p class="sub" style="margin:0 auto 52px;">No retainers. No subscriptions. Pay only for what you need.</p>
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ⑥ PRICING
+═══════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="pricing-header">
+      <div>
+        <div class="eyebrow reveal">Pricing</div>
+        <h2 class="reveal">Straightforward.<br/>No subscriptions.</h2>
+      </div>
+      <p class="lead reveal" style="max-width:320px;">Pay per output. No retainers, no contracts. Start free, scale on results.</p>
     </div>
     <div class="pricing-grid reveal">
 
       <!-- Single -->
       <div class="price-card">
-        <div class="price-name">Single Thumbnail</div>
+        <div class="price-label">Single Thumbnail</div>
         <div class="price-amount"><sup>$</sup>35</div>
-        <p class="price-original">2 variants · 48hr delivery</p>
+        <div class="price-sub">2 variants · 48-hour delivery</div>
+        <div class="price-was">&nbsp;</div>
+        <div class="price-divider"></div>
         <div class="price-features">
-          <div class="price-feature">2 thumbnail variants</div>
-          <div class="price-feature">CTR strategy brief</div>
-          <div class="price-feature">48-hour delivery</div>
+          <div class="price-feature">2 high-resolution thumbnail variants</div>
+          <div class="price-feature">CTR strategy brief included</div>
+          <div class="price-feature">48-hour standard delivery</div>
           <div class="price-feature">Unlimited revisions</div>
-          <div class="price-feature">High-res PNG + PSD</div>
+          <div class="price-feature">PNG + layered source file</div>
         </div>
-        <a href="#contact" class="btn btn-outline" style="width:100%;justify-content:center;">Get Started</a>
+        <a href="#contact" class="btn btn-ghost" style="justify-content:center;">
+          Get Started
+        </a>
       </div>
 
       <!-- Bundle -->
       <div class="price-card featured">
-        <span class="price-badge">🔥 Best Value — Save $75</span>
-        <div class="price-name" style="margin-top:12px;">5-Thumbnail Bundle</div>
+        <div class="price-label featured-label">5-Thumbnail Bundle</div>
         <div class="price-amount"><sup>$</sup>100</div>
-        <p class="price-original">Was $175 · Save $75</p>
-        <div class="price-savings">You save $75</div>
+        <div class="price-sub">10 variants · Priority 24hr delivery</div>
+        <div class="price-was">Saves <s>$75</s> vs. single rate — <strong>$20 per thumbnail</strong></div>
+        <div class="price-divider"></div>
         <div class="price-features">
-          <div class="price-feature">10 thumbnail variants</div>
-          <div class="price-feature">Channel CTR audit</div>
-          <div class="price-feature">Priority 24hr delivery</div>
+          <div class="price-feature">10 high-resolution thumbnail variants</div>
+          <div class="price-feature">Full channel CTR audit</div>
+          <div class="price-feature">Priority 24-hour delivery</div>
           <div class="price-feature">Unlimited revisions</div>
-          <div class="price-feature">Strategy call (20 min)</div>
+          <div class="price-feature">PNG + layered source files</div>
+          <div class="price-feature">20-minute strategy consultation</div>
+          <div class="price-feature">Thumbnail visual language guide</div>
         </div>
-        <a href="#contact" class="btn btn-green" style="width:100%;justify-content:center;">Get the Bundle →</a>
+        <a href="#contact" class="btn btn-primary" style="justify-content:center;">
+          Get the Bundle
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
       </div>
 
     </div>
-    <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:24px;">
-      Not sure yet? <a href="#contact" style="color:var(--green);">Get a free sample thumbnail first</a> — no payment required.
+    <p style="text-align:center;font-size:13px;color:var(--white-30);margin-top:24px;">
+      Not ready to commit?
+      <a href="#contact" style="color:var(--cyan);font-weight:500;">Request a free sample thumbnail first.</a>
+      No payment required.
     </p>
   </div>
 </section>
 
-<!-- ⑦ RISK REVERSAL -->
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ⑦ RISK REVERSAL
+═══════════════════════════════════════ -->
 <section class="risk" id="guarantee">
-  <div class="container">
-    <div class="risk-inner reveal">
-      <div>
-        <div class="label orange">Zero Risk</div>
-        <h2 class="risk-headline">Try It Free.<br />Pay Only If You <span class="accent">Love It.</span></h2>
-        <p class="sub" style="margin-bottom:28px;">
-          We put our work on the line. No credit card, no commitment—just results first, payment second.
+  <div class="wrap">
+    <div class="eyebrow reveal">Zero Risk</div>
+    <h2 class="reveal">We produce first.<br/>You pay if it's right.</h2>
+    <div class="risk-inner">
+      <div class="reveal">
+        <div class="risk-headline">Free sample.<br/><em>Full quality.</em><br/>No conditions.</div>
+        <p class="risk-sub">
+          We don't offer free samples as a sales tactic. We offer them because the work sells itself.
+          Send us your channel, we'll design one thumbnail, and you'll see exactly what working with us looks like
+          before a single dollar is exchanged.
         </p>
-        <a href="#contact" class="btn btn-orange">Claim Free Sample →</a>
+        <a href="#contact" class="btn btn-primary" style="font-size:15px;padding:15px 32px;">
+          Claim Your Free Thumbnail
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
       </div>
-      <div class="risk-shields">
-        <div class="shield">
-          <div class="shield-icon">🎁</div>
+      <div class="risk-panels reveal reveal-delay-1">
+        <div class="risk-panel">
+          <div class="risk-panel-icon">🎁</div>
           <div>
-            <strong>Free Sample Thumbnail</strong>
-            <span>We create one real thumbnail for your channel—completely free. No strings attached.</span>
+            <h4>One Free Thumbnail</h4>
+            <p>We design one real, full-quality thumbnail for your channel at no cost. This is not a mockup or a watermarked preview—it's production-ready work.</p>
           </div>
         </div>
-        <div class="shield">
-          <div class="shield-icon">✅</div>
+        <div class="risk-panel">
+          <div class="risk-panel-icon">✓</div>
           <div>
-            <strong>Pay Only If Satisfied</strong>
-            <span>Not happy with the result? You owe us exactly nothing. We only win when you win.</span>
+            <h4>Pay Only When Satisfied</h4>
+            <p>For paid orders, if the final deliverable does not meet expectations after revisions, you do not pay. Our incentive is your result.</p>
           </div>
         </div>
-        <div class="shield">
-          <div class="shield-icon">♾️</div>
+        <div class="risk-panel">
+          <div class="risk-panel-icon">∞</div>
           <div>
-            <strong>Unlimited Revisions</strong>
-            <span>We iterate until it's exactly right. Your satisfaction is the only deadline.</span>
+            <h4>Revisions Without Limits</h4>
+            <p>We revise until the output performs. There is no cap on revision rounds, no escalating fees, no change-order process.</p>
           </div>
         </div>
       </div>
@@ -993,43 +1179,46 @@
   </div>
 </section>
 
-<!-- ⑧ PROCESS -->
-<section id="process">
-  <div class="container">
-    <div class="reveal" style="text-align:center;">
-      <div class="label">How It Works</div>
-      <h2>3 Steps to<br />Higher CTR</h2>
-    </div>
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ⑧ PROCESS
+═══════════════════════════════════════ -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="eyebrow reveal">How It Works</div>
+    <h2 class="reveal">Simple process.<br/>Measurable output.</h2>
     <div class="process-steps reveal">
       <div class="step">
-        <div class="step-num">01</div>
-        <h3>Share Your Video</h3>
-        <p>Send us your video link or title, your channel niche, and any reference thumbnails you like. Takes 2 minutes.</p>
+        <div class="step-num">Step 01</div>
+        <h3>Share your video context</h3>
+        <p>Send us your video link or working title, your channel URL, and any reference thumbnails you find effective. The brief takes under three minutes.</p>
       </div>
       <div class="step">
-        <div class="step-num">02</div>
-        <h3>We Build &amp; Strategize</h3>
-        <p>We study your audience, your competitors, and design 2 CTR-optimized thumbnail variants within 48 hours.</p>
+        <div class="step-num">Step 02</div>
+        <h3>We research, strategise, design</h3>
+        <p>We analyse your niche's top-performing thumbnails, identify the visual patterns that drive clicks, and apply them to your content. Two variants are delivered within 48 hours.</p>
       </div>
       <div class="step">
-        <div class="step-num">03</div>
-        <h3>Watch Your CTR Climb</h3>
-        <p>Upload, run YouTube's A/B test, and watch the algorithm push your video to more viewers than ever before.</p>
+        <div class="step-num">Step 03</div>
+        <h3>Upload, test, watch the data</h3>
+        <p>Publish with YouTube's A/B thumbnail test enabled. The algorithm runs both variants against your audience and selects the higher performer automatically. You track the CTR lift in Studio.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ⑨ URGENCY -->
-<section class="urgency" id="urgency">
-  <div class="container">
-    <div class="urgency-pill">Limited Availability</div>
-    <h2>Only <span>3 Spots</span> Left<br />This Week</h2>
-    <p>We take on a limited number of clients each week to ensure every thumbnail gets full attention. Once slots fill—you wait.</p>
-    <div class="slots">
-      <div class="slot taken"></div>
-      <div class="slot taken"></div>
-      <div class="slot taken"></div>
+<div class="section-rule"></div>
+
+<!-- ═══════════════════════════════════════
+   ⑨ URGENCY
+═══════════════════════════════════════ -->
+<section class="urgency" id="availability">
+  <div class="wrap" style="max-width:640px;">
+    <div class="urgency-badge">Limited weekly capacity</div>
+    <h2 class="reveal">We take <span>7 clients</span><br/>per week. No exceptions.</h2>
+    <p class="lead reveal">To maintain quality, each thumbnail project receives our full attention. We don't scale on volume—we scale on results. Once the week fills, the next slot opens the following Monday.</p>
+    <div class="slots-row reveal">
       <div class="slot taken"></div>
       <div class="slot taken"></div>
       <div class="slot taken"></div>
@@ -1038,72 +1227,111 @@
       <div class="slot open"></div>
       <div class="slot open"></div>
     </div>
-    <a href="#contact" class="btn btn-orange" style="font-size:1.05rem;padding:17px 36px;">Secure My Spot →</a>
-  </div>
-</section>
-
-<!-- ⑩ FINAL CTA -->
-<section class="finalcta" id="contact">
-  <div class="container">
+    <p class="slots-label reveal">4 slots taken · 3 remaining this week</p>
     <div class="reveal">
-      <div class="label">Get Started Today</div>
-      <h2>Ready to Get<br /><span class="green">More Views?</span></h2>
-      <p>
-        Send us your YouTube channel link and we'll create a free thumbnail to prove what's possible.
-        No credit card. No commitment.
-      </p>
-      <div class="final-ctas">
-        <a class="btn-wa" href="https://wa.me/911234567890?text=Hi!%20I%20want%20a%20free%20thumbnail%20test%20for%20my%20YouTube%20channel." target="_blank">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-          Message on WhatsApp
-        </a>
-        <a href="mailto:hello@thumbctr.com?subject=Free%20Thumbnail%20Test%20Request" class="btn btn-outline" style="padding:15px 30px;">
-          ✉ Email Us Instead
-        </a>
-      </div>
-      <p style="margin-top:24px;font-size:.82rem;color:var(--muted);">Average response time: under 2 hours · Free sample delivered within 48 hours</p>
+      <a href="#contact" class="btn btn-red" style="font-size:15px;padding:15px 36px;">
+        Secure a Slot Now
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══════════════════════════════════════
+   ⑩ FINAL CTA
+═══════════════════════════════════════ -->
+<section class="final" id="contact">
+  <div class="final-glow"></div>
+  <div class="wrap" style="max-width:700px;position:relative;z-index:1;">
+    <div class="eyebrow reveal" style="justify-content:center;">Get Started Today</div>
+    <h2 class="reveal">One thumbnail.<br/>No cost. <em>Real results.</em></h2>
+    <p class="lead reveal" style="margin-left:auto;margin-right:auto;text-align:center;">
+      Share your channel and we'll design a free sample thumbnail within 48 hours.
+      If it performs, we continue. If not, you've lost nothing.
+    </p>
+    <div class="final-ctas reveal">
+      <a class="btn-wa" href="https://wa.me/911234567890?text=Hi%2C%20I%27d%20like%20a%20free%20thumbnail%20sample%20for%20my%20YouTube%20channel." target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        WhatsApp Us
+      </a>
+      <a href="mailto:hello@thumbctr.com?subject=Free%20Thumbnail%20Sample%20Request" class="btn btn-ghost" style="font-size:14px;padding:14px 28px;">
+        Email Instead
+      </a>
+    </div>
+    <p class="final-meta reveal">
+      hello@thumbctr.com &nbsp;·&nbsp; Avg response under 2 hours &nbsp;·&nbsp; Free sample within 48 hours
+    </p>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────── -->
 <footer>
-  <span class="nav-logo" style="font-size:1.1rem;">Thumb<span style="color:var(--green)">CTR</span></span>
-  <span>© 2024 ThumbCTR · All Rights Reserved</span>
-  <span style="color:var(--green);">hello@thumbctr.com</span>
+  <span class="footer-logo">Thumb<span>CTR</span></span>
+  <nav style="position:static;background:none;backdrop-filter:none;border:none;padding:0;height:auto;">
+    <div class="nav-links" style="display:flex;">
+      <a href="#problem" style="font-size:12px;color:var(--white-30);">The Problem</a>
+      <a href="#results" style="font-size:12px;color:var(--white-30);">Results</a>
+      <a href="#pricing" style="font-size:12px;color:var(--white-30);">Pricing</a>
+      <a href="#contact" style="font-size:12px;color:var(--white-30);">Contact</a>
+    </div>
+  </nav>
+  <span class="footer-copy">© 2024 ThumbCTR</span>
 </footer>
 
+<!-- ═══════════════════════════════════════
+   JS
+═══════════════════════════════════════ -->
 <script>
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // Sticky CTA hide on contact section
-  const sticky = document.querySelector('.sticky-cta');
-  const contactSec = document.getElementById('contact');
-  window.addEventListener('scroll', () => {
-    const rect = contactSec.getBoundingClientRect();
-    sticky.style.opacity = rect.top < window.innerHeight ? '0' : '1';
-    sticky.style.pointerEvents = rect.top < window.innerHeight ? 'none' : 'auto';
+// ── Scroll Reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
   });
+}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
 
-  // Animate slots sequentially
-  setTimeout(() => {
-    document.querySelectorAll('.slot').forEach((s, i) => {
-      s.style.transition = `opacity 0.3s ${i * 0.06}s, transform 0.3s ${i * 0.06}s`;
-      s.style.opacity = '0'; s.style.transform = 'scaleX(0)';
-      requestAnimationFrame(() => {
-        setTimeout(() => { s.style.opacity = '1'; s.style.transform = 'scaleX(1)'; }, 50);
-      });
-    });
-  }, 300);
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Float CTA visibility
+const floatBtn = document.querySelector('.float-cta');
+const contactSection = document.getElementById('contact');
+window.addEventListener('scroll', () => {
+  const rect = contactSection.getBoundingClientRect();
+  const inView = rect.top < window.innerHeight * 0.9;
+  floatBtn.style.transition = 'opacity .3s, transform .3s';
+  floatBtn.style.opacity = inView ? '0' : '1';
+  floatBtn.style.pointerEvents = inView ? 'none' : 'auto';
+  floatBtn.style.transform = inView ? 'translateY(8px)' : 'translateY(0)';
+}, { passive: true });
+
+// ── Nav active link
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current
+      ? 'var(--white)' : 'var(--white-60)';
+  });
+}, { passive: true });
+
+// ── Stagger metric blocks on load
+window.addEventListener('load', () => {
+  document.querySelectorAll('.metric-block').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(12px)';
+    setTimeout(() => {
+      el.style.transition = 'opacity .6s var(--ease), transform .6s var(--ease)';
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    }, 900 + i * 100);
+  });
+});
 </script>
 </body>
 </html>
