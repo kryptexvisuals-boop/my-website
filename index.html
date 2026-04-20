@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ThumbCTR — Performance Creative for YouTube</title>
+<title>VEXRA — Performance Creative for YouTube</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -17,18 +17,18 @@
   --bg-2:      #0f0f0f;
   --surface:   #111111;
   --surface-2: #161616;
-  --line:      rgba(255,255,255,0.06);
-  --line-mid:  rgba(255,255,255,0.10);
+  --line:      rgba(255,255,255,0.07);
+  --line-mid:  rgba(255,255,255,0.11);
   --white:     #ffffff;
   --white-60:  rgba(255,255,255,0.6);
   --white-30:  rgba(255,255,255,0.3);
   --white-10:  rgba(255,255,255,0.06);
   --cyan:      #00E5FF;
   --cyan-dim:  rgba(0,229,255,0.12);
-  --cyan-glow: rgba(0,229,255,0.20);
+  --cyan-glow: rgba(0,229,255,0.22);
   --red:       #FF2D2D;
   --red-dim:   rgba(255,45,45,0.10);
-  --font:      'Inter', -apple-system, sans-serif;
+  --font:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --max:       1080px;
   --ease:      cubic-bezier(0.16,1,0.3,1);
   --ease-out:  cubic-bezier(0.0,0,0.2,1);
@@ -38,7 +38,7 @@
    RESET & BASE
 ═══════════════════════════════════════════ */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 body {
   background:var(--bg);
   color:var(--white);
@@ -49,7 +49,7 @@ body {
 }
 a { text-decoration:none; color:inherit; }
 ul { list-style:none; }
-img { display:block; max-width:100%; }
+img { display:block; max-width:100%; height:auto; }
 
 /* ═══════════════════════════════════════════
    NOISE TEXTURE
@@ -58,18 +58,17 @@ body::after {
   content:'';
   position:fixed; inset:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none; z-index:9998; opacity:.5;
+  pointer-events:none; z-index:9998; opacity:.45;
 }
 
 /* ═══════════════════════════════════════════
-   LAYOUT HELPERS
+   LAYOUT
 ═══════════════════════════════════════════ */
-.wrap { max-width:var(--max); margin:0 auto; padding:0 5%; }
-section { padding:120px 5%; }
-@media(max-width:768px){ section{ padding:80px 5%; } }
+.wrap { max-width:var(--max); margin:0 auto; padding:0 clamp(20px,5%,60px); }
+section { padding:120px clamp(20px,5%,60px); }
 
 /* ═══════════════════════════════════════════
-   TYPOGRAPHY SYSTEM
+   TYPOGRAPHY
 ═══════════════════════════════════════════ */
 .eyebrow {
   display:inline-flex; align-items:center; gap:8px;
@@ -77,23 +76,20 @@ section { padding:120px 5%; }
   text-transform:uppercase; color:var(--cyan);
   margin-bottom:28px;
 }
-.eyebrow::before {
-  content:''; display:block;
-  width:20px; height:1px; background:var(--cyan);
-}
+.eyebrow::before { content:''; display:block; width:20px; height:1px; background:var(--cyan); }
 .eyebrow.red { color:var(--red); }
 .eyebrow.red::before { background:var(--red); }
 
 h1,h2,h3,h4 { font-family:var(--font); line-height:1.08; letter-spacing:-.03em; }
-h1 { font-size:clamp(3rem,6.5vw,6rem); font-weight:800; }
-h2 { font-size:clamp(2rem,4.5vw,3.8rem); font-weight:800; }
-h3 { font-size:clamp(1.1rem,2vw,1.35rem); font-weight:700; letter-spacing:-.02em; }
-h4 { font-size:1rem; font-weight:600; letter-spacing:-.01em; }
+h1 { font-size:clamp(2.8rem,6.5vw,5.8rem); font-weight:800; }
+h2 { font-size:clamp(1.9rem,4.5vw,3.6rem); font-weight:800; }
+h3 { font-size:clamp(1.05rem,2vw,1.3rem); font-weight:700; letter-spacing:-.02em; }
+h4 { font-size:.95rem; font-weight:600; letter-spacing:-.01em; }
 
 .lead {
-  font-size:clamp(1rem,1.8vw,1.15rem);
+  font-size:clamp(.95rem,1.8vw,1.1rem);
   color:var(--white-60);
-  line-height:1.75;
+  line-height:1.8;
   font-weight:400;
   max-width:520px;
 }
@@ -106,59 +102,40 @@ h4 { font-size:1rem; font-weight:600; letter-spacing:-.01em; }
   padding:14px 28px; border-radius:6px;
   font-family:var(--font); font-size:14px; font-weight:600;
   letter-spacing:.01em; cursor:pointer; border:none;
-  transition:all .25s var(--ease);
-  white-space:nowrap;
+  transition:all .28s var(--ease); white-space:nowrap;
+  position:relative; overflow:hidden;
 }
-.btn-primary {
-  background:var(--cyan); color:#000;
-  box-shadow:0 0 0 0 var(--cyan-glow);
+.btn::after {
+  content:''; position:absolute; inset:0;
+  background:rgba(255,255,255,.07); opacity:0;
+  transition:opacity .2s;
 }
-.btn-primary:hover {
-  background:#fff;
-  box-shadow:0 0 0 8px var(--cyan-dim);
-  transform:translateY(-1px);
-}
-.btn-ghost {
-  background:transparent; color:var(--white);
-  border:1px solid var(--line-mid);
-}
-.btn-ghost:hover {
-  border-color:var(--white-30);
-  background:var(--white-10);
-}
-.btn-red {
-  background:var(--red); color:#fff;
-  box-shadow:0 0 0 0 rgba(255,45,45,.2);
-}
-.btn-red:hover {
-  background:#ff4d4d;
-  box-shadow:0 0 0 8px rgba(255,45,45,.1);
-  transform:translateY(-1px);
-}
-.btn svg { width:16px; height:16px; flex-shrink:0; transition:transform .2s var(--ease); }
-.btn:hover svg { transform:translateX(3px); }
+.btn:hover::after { opacity:1; }
+.btn-primary { background:var(--cyan); color:#000; }
+.btn-primary:hover { background:#33ecff; box-shadow:0 0 0 6px var(--cyan-dim), 0 8px 24px rgba(0,229,255,.2); transform:translateY(-1px); }
+.btn-ghost { background:transparent; color:var(--white); border:1px solid var(--line-mid); }
+.btn-ghost:hover { border-color:var(--white-30); background:var(--white-10); }
+.btn-red { background:var(--red); color:#fff; }
+.btn-red:hover { background:#ff4d4d; box-shadow:0 0 0 6px rgba(255,45,45,.12), 0 8px 24px rgba(255,45,45,.2); transform:translateY(-1px); }
+.btn svg { width:16px; height:16px; flex-shrink:0; transition:transform .22s var(--ease); }
+.btn:hover svg { transform:translateX(4px); }
 
 /* ═══════════════════════════════════════════
-   STICKY FLOAT CTA
+   FLOATING CTA
 ═══════════════════════════════════════════ */
 .float-cta {
   position:fixed; bottom:24px; right:24px; z-index:1000;
   display:flex; align-items:center; gap:9px;
   background:var(--cyan); color:#000;
   padding:13px 22px; border-radius:40px;
-  font-size:13px; font-weight:700; letter-spacing:.01em;
-  box-shadow:0 8px 32px rgba(0,229,255,.25), 0 0 0 1px rgba(0,229,255,.15);
+  font-family:var(--font); font-size:13px; font-weight:700; letter-spacing:.01em;
+  box-shadow:0 8px 32px rgba(0,229,255,.28), 0 0 0 1px rgba(0,229,255,.15);
   cursor:pointer; border:none;
-  transition:all .25s var(--ease);
-  animation:slideUp .5s 1.2s var(--ease) both;
+  transition:background .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease), opacity .3s, top .3s;
+  animation:slideUp .5s 1.4s var(--ease) both;
 }
-.float-cta:hover { background:#fff; transform:translateY(-2px); box-shadow:0 12px 40px rgba(0,229,255,.35); }
-.float-cta .dot {
-  width:7px; height:7px; border-radius:50%;
-  background:rgba(0,0,0,.4); animation:blink 2s infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.float-cta:hover { background:#33ecff; transform:translateY(-2px); box-shadow:0 14px 44px rgba(0,229,255,.38); }
+.float-cta .dot { width:7px; height:7px; border-radius:50%; background:rgba(0,0,0,.45); animation:blink 2s infinite; flex-shrink:0; }
 
 /* ═══════════════════════════════════════════
    NAV
@@ -166,26 +143,48 @@ h4 { font-size:1rem; font-weight:600; letter-spacing:-.01em; }
 nav {
   position:fixed; top:0; left:0; right:0; z-index:500;
   display:flex; align-items:center; justify-content:space-between;
-  padding:0 5%; height:64px;
-  background:rgba(5,5,5,.8);
+  padding:0 clamp(20px,5%,60px); height:64px;
+  background:rgba(5,5,5,.82);
   backdrop-filter:blur(20px) saturate(180%);
   border-bottom:1px solid var(--line);
+  transition:background .3s;
 }
-.nav-logo {
-  font-size:14px; font-weight:700; letter-spacing:-.01em;
-  color:var(--white);
-}
+nav.scrolled { background:rgba(5,5,5,.96); }
+.nav-logo { font-size:15px; font-weight:800; letter-spacing:-.02em; color:var(--white); }
 .nav-logo span { color:var(--cyan); }
-.nav-links {
-  display:flex; align-items:center; gap:32px;
-}
-.nav-links a {
-  font-size:13px; font-weight:500; color:var(--white-60);
-  transition:color .2s;
-}
+.nav-links { display:flex; align-items:center; gap:32px; }
+.nav-links a { font-size:13px; font-weight:500; color:var(--white-60); transition:color .2s; }
 .nav-links a:hover { color:var(--white); }
-@media(max-width:768px){
-  .nav-links { display:none; }
+.nav-links a.active { color:var(--white); }
+
+/* ═══════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════ */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+@keyframes slideUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes glowPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+@keyframes countUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ═══════════════════════════════════════════
+   REVEAL SYSTEM
+═══════════════════════════════════════════ */
+.reveal {
+  opacity:0; transform:translateY(22px);
+  transition:opacity .75s var(--ease), transform .75s var(--ease);
+}
+.reveal.visible { opacity:1; transform:none; }
+.reveal-delay-1 { transition-delay:.1s; }
+.reveal-delay-2 { transition-delay:.2s; }
+.reveal-delay-3 { transition-delay:.3s; }
+.reveal-delay-4 { transition-delay:.4s; }
+
+/* ═══════════════════════════════════════════
+   SECTION DIVIDER
+═══════════════════════════════════════════ */
+.section-rule {
+  width:100%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--line-mid) 25%,var(--line-mid) 75%,transparent);
 }
 
 /* ═══════════════════════════════════════════
@@ -195,203 +194,148 @@ nav {
   min-height:100svh;
   display:flex; flex-direction:column; justify-content:center;
   padding-top:120px; padding-bottom:80px;
-  padding-left:0; padding-right:0; /* cancel the 5% from section rule — hero-inner handles its own padding */
+  padding-left:0; padding-right:0;
   position:relative; overflow:hidden;
 }
 .hero-glow {
-  position:absolute; top:10%; right:-10%;
-  width:600px; height:600px; border-radius:50%;
-  background:radial-gradient(circle, rgba(0,229,255,.07) 0%, transparent 65%);
-  pointer-events:none;
+  position:absolute; top:5%; right:-8%;
+  width:700px; height:700px; border-radius:50%;
+  background:radial-gradient(circle,rgba(0,229,255,.07) 0%,transparent 65%);
+  pointer-events:none; animation:glowPulse 6s ease-in-out infinite;
 }
 .hero-glow-2 {
-  position:absolute; bottom:-5%; left:-5%;
-  width:400px; height:400px; border-radius:50%;
-  background:radial-gradient(circle, rgba(255,45,45,.05) 0%, transparent 65%);
-  pointer-events:none;
+  position:absolute; bottom:-10%; left:-5%;
+  width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle,rgba(255,45,45,.05) 0%,transparent 65%);
+  pointer-events:none; animation:glowPulse 8s 2s ease-in-out infinite;
 }
-/* Horizontal rule lines bg */
 .hero-lines {
   position:absolute; inset:0; overflow:hidden; pointer-events:none;
 }
-.hero-lines::before, .hero-lines::after {
-  content:'';
-  position:absolute; left:0; right:0; height:1px; background:var(--line);
+.hero-lines::before,.hero-lines::after {
+  content:''; position:absolute; left:0; right:0; height:1px; background:var(--line);
 }
 .hero-lines::before { top:33.3%; }
 .hero-lines::after { top:66.6%; }
 
 .hero-inner {
-  max-width:1200px; /* wider than --max so headline has room on large screens */
-  margin:0 auto; width:100%;
-  padding:0 clamp(24px, 5vw, 80px); /* single, consistent horizontal padding */
+  max-width:1200px; margin:0 auto; width:100%;
+  padding:0 clamp(24px,5vw,80px);
+  position:relative; z-index:1;
 }
 .hero-kicker {
   display:inline-flex; align-items:center; gap:10px;
   background:var(--red-dim); border:1px solid rgba(255,45,45,.18);
   padding:7px 14px; border-radius:4px; margin-bottom:36px;
   font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
-  color:var(--red);
+  color:var(--red); animation:fadeIn .6s .3s var(--ease) both;
 }
 .hero-kicker::before {
   content:''; width:6px; height:6px; border-radius:50%;
   background:var(--red); animation:blink 1.8s infinite;
 }
-.hero h1 { margin-bottom:28px; max-width:none; } /* was 800px — caused narrow, over-broken headline */
+.hero h1 { margin-bottom:28px; max-width:none; }
 .hero h1 em { font-style:normal; color:var(--cyan); }
 .hero h1 .red-word { color:var(--red); }
 .hero .lead { margin-bottom:44px; }
 .hero-ctas { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
-.hero-note {
-  margin-top:16px;
-  font-size:12px; color:var(--white-30); letter-spacing:.02em;
-}
+.hero-note { margin-top:16px; font-size:12px; color:var(--white-30); letter-spacing:.02em; }
 
 .hero-metrics {
-  margin-top:60px; padding-top:0;
+  margin-top:60px;
   border-top:1px solid var(--line);
   display:grid; grid-template-columns:repeat(3,1fr);
   gap:1px; background:var(--line);
   border-bottom:1px solid var(--line);
-  width:100%; /* full-bleed stripe, no max-width cap */
-  max-width:none;
+  width:100%; position:relative; z-index:1;
 }
 .metric-block {
   background:var(--bg);
-  padding:32px clamp(20px, 3.5vw, 48px);
+  padding:32px clamp(20px,3.5vw,48px);
   display:flex; flex-direction:column; gap:6px;
-  transition:background .2s;
+  transition:background .25s;
+  cursor:default;
 }
 .metric-block:hover { background:var(--surface); }
 .metric-val {
   font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:800;
-  letter-spacing:-.04em; line-height:1;
-  color:var(--white);
+  letter-spacing:-.04em; line-height:1; color:var(--white);
+  transition:color .25s;
 }
+.metric-block:hover .metric-val { color:var(--cyan); }
 .metric-val span { color:var(--cyan); }
-.metric-lbl {
-  font-size:12px; font-weight:500;
-  color:var(--white-30); letter-spacing:.06em; text-transform:uppercase;
-}
-@media(max-width:768px){
-  .hero-metrics { grid-template-columns:repeat(3,1fr); } /* keep 3-col but tighten padding */
-  .metric-block { padding:22px 16px; }
-  .metric-lbl { font-size:10px; }
-}
-@media(max-width:480px){
-  .hero-metrics { grid-template-columns:1fr 1fr 1fr; } /* still 3-col, just smaller */
-  .metric-block { padding:18px 12px; }
-  .metric-val { font-size:clamp(1.4rem,6vw,2rem); }
-}
-
-/* ═══════════════════════════════════════════
-   DIVIDER
-═══════════════════════════════════════════ */
-.section-rule {
-  width:100%; height:1px;
-  background:linear-gradient(90deg, transparent, var(--line-mid) 30%, var(--line-mid) 70%, transparent);
-}
+.metric-lbl { font-size:12px; font-weight:500; color:var(--white-30); letter-spacing:.06em; text-transform:uppercase; }
 
 /* ═══════════════════════════════════════════
    ② PROBLEM
 ═══════════════════════════════════════════ */
 .problem { background:var(--bg-1); }
-.problem-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;
-  margin-top:64px;
-}
+.problem-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-top:64px; }
 .problem-issues { display:flex; flex-direction:column; }
 .issue-row {
   display:grid; grid-template-columns:48px 1fr; gap:20px;
   padding:28px 0; border-bottom:1px solid var(--line);
-  transition:all .2s;
+  transition:all .25s var(--ease);
 }
 .issue-row:first-child { border-top:1px solid var(--line); }
-.issue-row:hover { background:var(--white-10); margin:0 -16px; padding:28px 16px; }
-.issue-index {
-  font-size:11px; font-weight:700; color:var(--white-30);
-  letter-spacing:.08em; padding-top:3px;
-}
+.issue-row:hover { background:var(--white-10); margin:0 -16px; padding:28px 16px; border-radius:4px; }
+.issue-index { font-size:11px; font-weight:700; color:var(--white-30); letter-spacing:.08em; padding-top:3px; }
 .issue-content h4 { margin-bottom:6px; font-size:.95rem; }
 .issue-content p { font-size:.875rem; color:var(--white-60); line-height:1.65; }
 .issue-content .pain { color:var(--red); font-weight:600; }
 
 .problem-callout {
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:8px; padding:40px;
-  position:sticky; top:100px;
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:8px; padding:40px; position:sticky; top:100px;
+  transition:border-color .3s;
 }
+.problem-callout:hover { border-color:var(--line-mid); }
 .callout-stat {
   font-size:clamp(3rem,5vw,4.5rem); font-weight:800;
-  letter-spacing:-.05em; line-height:1; color:var(--white);
-  margin-bottom:4px;
+  letter-spacing:-.05em; line-height:1; color:var(--white); margin-bottom:4px;
 }
 .callout-stat span { color:var(--red); }
-.callout-sub {
-  font-size:.875rem; color:var(--white-60); margin-bottom:36px;
-  line-height:1.6;
-}
-.callout-note {
-  padding-top:28px; border-top:1px solid var(--line);
-  font-size:.8rem; color:var(--white-30); line-height:1.7;
-}
-
-@media(max-width:900px){
-  .problem-grid { grid-template-columns:1fr; gap:48px; }
-  .problem-callout { position:static; }
-}
+.callout-sub { font-size:.875rem; color:var(--white-60); margin-bottom:36px; line-height:1.65; }
+.callout-note { padding-top:24px; border-top:1px solid var(--line); font-size:.8rem; color:var(--white-30); line-height:1.7; }
 
 /* ═══════════════════════════════════════════
    ③ BEFORE / AFTER
 ═══════════════════════════════════════════ */
 .ba { background:var(--bg-2); }
-.ba-header {
-  display:flex; align-items:flex-end; justify-content:space-between;
-  flex-wrap:wrap; gap:24px; margin-bottom:56px;
-}
+.ba-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-bottom:56px; }
 .ba-grid {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
-  background:var(--line); border:1px solid var(--line); border-radius:10px;
-  overflow:hidden;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:10px; overflow:hidden;
 }
-.ba-card { background:var(--surface); display:flex; flex-direction:column; }
+.ba-card {
+  background:var(--surface); display:flex; flex-direction:column;
+  transition:background .25s;
+}
+.ba-card:hover { background:var(--surface-2); }
+
 .ba-visual {
-  aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
-  position:relative; overflow:hidden;
-}
-.ba-visual.before {
-  background:linear-gradient(135deg,#111 0%,#161616 100%);
+  aspect-ratio:16/9; position:relative; overflow:hidden;
   border-bottom:1px solid var(--line);
 }
-.ba-visual.after {
-  background:linear-gradient(135deg,#001a20 0%,#00101a 100%);
-  border-bottom:1px solid rgba(0,229,255,.08);
+.ba-visual img {
+  width:100%; height:100%; object-fit:cover;
+  transition:transform .5s var(--ease), filter .4s;
 }
-.ba-visual-inner {
-  width:75%; height:55%; border-radius:4px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:600; letter-spacing:.1em;
-  text-transform:uppercase;
-}
-.ba-visual.before .ba-visual-inner {
-  background:rgba(255,255,255,.04); color:var(--white-30);
-  border:1px dashed rgba(255,255,255,.08);
-}
-.ba-visual.after .ba-visual-inner {
-  background:rgba(0,229,255,.06); color:rgba(0,229,255,.5);
-  border:1px dashed rgba(0,229,255,.15);
-}
+.ba-card:hover .ba-visual img { transform:scale(1.03); }
+.ba-visual.before img { filter:saturate(.7) brightness(.85); }
+.ba-visual.after img { filter:saturate(1.05) brightness(1); }
+
 .ba-chip {
-  position:absolute; top:10px; left:10px;
+  position:absolute; top:10px; left:10px; z-index:2;
   font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
   padding:3px 9px; border-radius:3px;
 }
-.ba-chip.b { background:rgba(255,45,45,.15); color:var(--red); border:1px solid rgba(255,45,45,.2); }
-.ba-chip.a { background:rgba(0,229,255,.12); color:var(--cyan); border:1px solid rgba(0,229,255,.2); }
+.ba-chip.b { background:rgba(255,45,45,.18); color:var(--red); border:1px solid rgba(255,45,45,.25); backdrop-filter:blur(6px); }
+.ba-chip.a { background:rgba(0,229,255,.15); color:var(--cyan); border:1px solid rgba(0,229,255,.25); backdrop-filter:blur(6px); }
 .ba-sep {
   display:flex; align-items:center; justify-content:center;
-  padding:10px; font-size:10px; font-weight:700; letter-spacing:.1em;
+  padding:9px; font-size:10px; font-weight:700; letter-spacing:.1em;
   text-transform:uppercase; color:var(--white-30);
   border-bottom:1px solid var(--line); gap:8px;
 }
@@ -403,14 +347,10 @@ nav {
 .ba-delta-val { font-size:1.5rem; font-weight:800; letter-spacing:-.03em; line-height:1; color:var(--cyan); }
 .ba-delta-lbl { font-size:11px; font-weight:500; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; }
 .ba-old { color:var(--white-30); font-size:.8rem; margin-top:10px; }
-.ba-old span { text-decoration:line-through; }
-
-@media(max-width:860px){
-  .ba-grid { grid-template-columns:1fr; max-width:460px; margin:0 auto; }
-}
+.ba-old span { text-decoration:line-through; color:rgba(255,45,45,.6); }
 
 /* ═══════════════════════════════════════════
-   ④ OFFER / SERVICE
+   ④ OFFER
 ═══════════════════════════════════════════ */
 .offer { background:var(--bg-1); }
 .offer-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-top:64px; }
@@ -418,173 +358,166 @@ nav {
 .benefit {
   display:flex; align-items:flex-start; gap:20px;
   padding:24px 0; border-bottom:1px solid var(--line);
+  transition:padding .25s var(--ease);
 }
 .benefit:first-child { border-top:1px solid var(--line); }
+.benefit:hover { padding-left:8px; }
 .benefit-icon {
   width:40px; height:40px; border-radius:6px;
   background:var(--cyan-dim); border:1px solid rgba(0,229,255,.12);
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0; font-size:18px;
+  transition:background .25s, border-color .25s;
 }
+.benefit:hover .benefit-icon { background:rgba(0,229,255,.18); border-color:rgba(0,229,255,.2); }
 .benefit-text h4 { margin-bottom:4px; font-size:.9rem; }
-.benefit-text p { font-size:.85rem; color:var(--white-60); line-height:1.6; }
+.benefit-text p { font-size:.85rem; color:var(--white-60); line-height:1.65; }
 
 .offer-panel {
   background:var(--surface); border:1px solid var(--line);
-  border-radius:8px; overflow:hidden;
-  position:sticky; top:100px;
+  border-radius:8px; overflow:hidden; position:sticky; top:100px;
+  transition:border-color .3s;
 }
-.offer-panel-top {
-  padding:36px; border-bottom:1px solid var(--line);
-}
+.offer-panel:hover { border-color:var(--line-mid); }
+.offer-panel-top { padding:36px; border-bottom:1px solid var(--line); }
 .offer-panel-top h3 { margin-bottom:12px; font-size:1.1rem; }
-.offer-panel-top p { font-size:.875rem; color:var(--white-60); line-height:1.7; }
+.offer-panel-top p { font-size:.875rem; color:var(--white-60); line-height:1.72; }
 .offer-kpis {
-  padding:28px 36px; display:grid; grid-template-columns:1fr 1fr; gap:1px;
-  background:var(--line); border-bottom:1px solid var(--line);
+  padding:28px 36px; display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--line); border-bottom:1px solid var(--line);
 }
-.offer-kpi { background:var(--surface); padding:20px; }
+.offer-kpi { background:var(--surface); padding:20px; transition:background .2s; }
+.offer-kpi:hover { background:var(--surface-2); }
 .offer-kpi-val { font-size:1.8rem; font-weight:800; letter-spacing:-.04em; color:var(--cyan); line-height:1; }
 .offer-kpi-lbl { font-size:11px; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; margin-top:4px; }
 .offer-panel-cta { padding:28px 36px; }
 
-@media(max-width:900px){
-  .offer-grid { grid-template-columns:1fr; gap:48px; }
-  .offer-panel { position:static; }
-}
-
 /* ═══════════════════════════════════════════
-   ⑤ CASE STUDY
+   ⑤ CASE STUDY — shared styles
 ═══════════════════════════════════════════ */
 .case { background:var(--bg-2); }
+.case + .case { background:var(--bg-1); }
+
 .case-block {
   margin-top:56px; border:1px solid var(--line); border-radius:8px;
   overflow:hidden; display:grid; grid-template-columns:1fr 1fr;
+  transition:border-color .3s;
 }
+.case-block:hover { border-color:var(--line-mid); }
+
 .case-data {
-  background:var(--surface-2);
-  padding:56px 48px;
+  background:var(--surface-2); padding:52px 44px;
   border-right:1px solid var(--line);
-  display:flex; flex-direction:column; justify-content:space-between;
-  gap:40px;
+  display:flex; flex-direction:column; justify-content:space-between; gap:40px;
 }
+.case-thumb-wrap {
+  width:100%; aspect-ratio:16/9; border-radius:6px; overflow:hidden;
+  border:1px solid var(--line);
+}
+.case-thumb-wrap img { width:100%; height:100%; object-fit:cover; transition:transform .5s var(--ease); }
+.case-block:hover .case-thumb-wrap img { transform:scale(1.04); }
+
 .case-channel-label { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--white-30); margin-bottom:8px; }
-.case-channel-name { font-size:clamp(1.6rem,3vw,2.2rem); font-weight:800; letter-spacing:-.03em; }
+.case-channel-name { font-size:clamp(1.5rem,2.8vw,2rem); font-weight:800; letter-spacing:-.03em; }
 .case-results { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
-.case-result { background:var(--surface-2); padding:22px 20px; }
-.case-result-val { font-size:1.9rem; font-weight:800; letter-spacing:-.04em; line-height:1; color:var(--cyan); }
-.case-result-val.red { color:var(--red); font-size:1.2rem; }
+.case-result { background:var(--surface-2); padding:20px 18px; transition:background .2s; }
+.case-result:hover { background:var(--surface); }
+.case-result-val { font-size:1.8rem; font-weight:800; letter-spacing:-.04em; line-height:1; color:var(--cyan); }
+.case-result-val.red { color:var(--red); font-size:1.15rem; }
 .case-result-lbl { font-size:11px; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; margin-top:4px; }
 
-.case-story { padding:56px 48px; display:flex; flex-direction:column; justify-content:space-between; gap:36px; }
-.case-context { font-size:.95rem; color:var(--white-60); line-height:1.8; }
+.case-story { padding:52px 44px; display:flex; flex-direction:column; justify-content:space-between; gap:32px; }
+.case-context { font-size:.925rem; color:var(--white-60); line-height:1.85; }
 .case-context strong { color:var(--white); font-weight:600; }
 .case-context .num { color:var(--cyan); font-weight:700; }
-.case-author-row { display:flex; align-items:center; gap:16px; padding-top:28px; border-top:1px solid var(--line); }
+.case-context .neg { color:var(--red); font-weight:600; }
+.case-author-row { display:flex; align-items:center; gap:16px; padding-top:24px; border-top:1px solid var(--line); }
 .case-avatar {
   width:44px; height:44px; border-radius:50%;
   background:var(--surface); border:1px solid var(--line);
   display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
 }
 .case-author-name { font-size:.9rem; font-weight:600; }
-.case-author-meta { font-size:.8rem; color:var(--white-30); margin-top:2px; }
-
-@media(max-width:820px){
-  .case-block { grid-template-columns:1fr; }
-  .case-data { border-right:none; border-bottom:1px solid var(--line); padding:36px 28px; }
-  .case-story { padding:36px 28px; }
-}
+.case-author-meta { font-size:.79rem; color:var(--white-30); margin-top:2px; }
 
 /* ═══════════════════════════════════════════
-   ⑥ PRICING
+   ⑥ PRICING — 4 cards 2×2
 ═══════════════════════════════════════════ */
 .pricing { background:var(--bg-1); }
 .pricing-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:20px; margin-bottom:56px; }
 .pricing-grid {
-  display:grid; grid-template-columns:1fr 1fr;
+  display:grid; grid-template-columns:repeat(2,1fr);
   gap:1px; background:var(--line);
   border:1px solid var(--line); border-radius:8px;
-  overflow:hidden;
-  max-width:760px; margin:0 auto;
+  overflow:hidden; max-width:860px; margin:0 auto;
 }
 .price-card {
-  background:var(--surface);
-  padding:44px 40px;
+  background:var(--surface); padding:40px 36px;
   display:flex; flex-direction:column;
-  transition:background .2s;
+  transition:background .25s var(--ease);
+  position:relative;
 }
 .price-card:hover { background:var(--surface-2); }
 .price-card.featured {
-  background:var(--bg);
-  position:relative;
+  background:linear-gradient(160deg,#0c1a1e,var(--surface));
+  border:none;
 }
 .price-card.featured::before {
-  content:'BEST VALUE';
-  position:absolute; top:0; left:0; right:0;
-  height:3px; background:var(--cyan);
+  content:'MOST POPULAR';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--cyan),rgba(0,229,255,.4));
 }
-.price-label {
-  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--white-30); margin-bottom:20px;
+.price-card.featured::after {
+  content:'MOST POPULAR';
+  position:absolute; top:6px; right:16px;
+  font-size:9px; font-weight:800; letter-spacing:.14em;
+  color:var(--cyan); opacity:.7;
 }
+.price-label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--white-30); margin-bottom:18px; }
 .price-label.featured-label { color:var(--cyan); }
 .price-amount {
-  font-size:clamp(2.5rem,5vw,3.5rem); font-weight:800;
+  font-size:clamp(2.2rem,4.5vw,3.2rem); font-weight:800;
   letter-spacing:-.05em; line-height:1; margin-bottom:4px;
 }
-.price-amount sup { font-size:1.2rem; vertical-align:top; margin-top:.6rem; font-weight:500; color:var(--white-60); }
-.price-sub { font-size:.85rem; color:var(--white-30); margin-bottom:6px; }
-.price-was { font-size:.8rem; color:var(--white-30); margin-bottom:28px; }
-.price-was s { color:var(--red); }
-.price-was strong { color:var(--cyan); font-weight:600; }
-.price-divider { height:1px; background:var(--line); margin-bottom:28px; }
-.price-features { display:flex; flex-direction:column; gap:13px; margin-bottom:36px; flex:1; }
-.price-feature {
-  display:flex; align-items:flex-start; gap:12px;
-  font-size:.875rem; color:var(--white-60);
-}
+.price-amount sup { font-size:1.1rem; vertical-align:top; margin-top:.55rem; font-weight:500; color:var(--white-60); }
+.price-sub { font-size:.83rem; color:var(--white-30); margin-bottom:6px; }
+.price-per { font-size:.78rem; color:var(--white-30); margin-bottom:24px; }
+.price-per strong { color:var(--cyan); font-weight:600; }
+.price-divider { height:1px; background:var(--line); margin-bottom:24px; }
+.price-features { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; flex:1; }
+.price-feature { display:flex; align-items:flex-start; gap:12px; font-size:.855rem; color:var(--white-60); }
 .price-feature::before {
-  content:''; width:16px; height:16px; border-radius:3px;
-  background:var(--cyan-dim); border:1px solid rgba(0,229,255,.15);
-  display:flex; flex-shrink:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 8l3.5 3.5L13 5' stroke='%2300E5FF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size:contain; background-repeat:no-repeat;
-  margin-top:1px;
+  content:''; width:16px; height:16px; border-radius:3px; flex-shrink:0;
+  background:var(--cyan-dim) url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 8l3.5 3.5L13 5' stroke='%2300E5FF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  border:1px solid rgba(0,229,255,.15); margin-top:1px;
 }
-
-@media(max-width:700px){
-  .pricing-grid { grid-template-columns:1fr; max-width:440px; margin:0 auto; }
-}
+.price-contact { display:flex; flex-direction:column; gap:8px; }
+.price-contact p { font-size:.83rem; color:var(--white-30); line-height:1.6; }
 
 /* ═══════════════════════════════════════════
    ⑦ RISK REVERSAL
 ═══════════════════════════════════════════ */
 .risk { background:var(--bg-2); }
-.risk-inner {
-  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;
-  margin-top:64px;
-}
-.risk-headline { font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:800; letter-spacing:-.03em; line-height:1.1; margin-bottom:20px; }
+.risk-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:64px; }
+.risk-headline { font-size:clamp(1.7rem,3.5vw,2.7rem); font-weight:800; letter-spacing:-.03em; line-height:1.1; margin-bottom:20px; }
 .risk-headline em { font-style:normal; color:var(--cyan); }
-.risk-sub { font-size:.95rem; color:var(--white-60); line-height:1.75; margin-bottom:36px; }
+.risk-sub { font-size:.925rem; color:var(--white-60); line-height:1.78; margin-bottom:36px; }
 .risk-panels { display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
 .risk-panel {
-  background:var(--surface); padding:28px 32px;
-  display:flex; gap:20px; align-items:flex-start;
-  transition:background .2s;
+  background:var(--surface); padding:26px 30px;
+  display:flex; gap:18px; align-items:flex-start;
+  transition:background .2s, padding .25s var(--ease);
 }
-.risk-panel:hover { background:var(--surface-2); }
+.risk-panel:hover { background:var(--surface-2); padding-left:36px; }
 .risk-panel-icon {
-  width:44px; height:44px; border-radius:6px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center; font-size:20px;
+  width:42px; height:42px; border-radius:6px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:19px;
   background:var(--cyan-dim); border:1px solid rgba(0,229,255,.1);
+  transition:background .25s;
 }
-.risk-panel h4 { margin-bottom:5px; font-size:.9rem; }
-.risk-panel p { font-size:.83rem; color:var(--white-60); line-height:1.65; }
-
-@media(max-width:900px){
-  .risk-inner { grid-template-columns:1fr; gap:48px; }
-}
+.risk-panel:hover .risk-panel-icon { background:rgba(0,229,255,.18); }
+.risk-panel h4 { margin-bottom:5px; font-size:.88rem; }
+.risk-panel p { font-size:.82rem; color:var(--white-60); line-height:1.65; }
 
 /* ═══════════════════════════════════════════
    ⑧ PROCESS
@@ -593,67 +526,59 @@ nav {
 .process-steps {
   display:grid; grid-template-columns:repeat(3,1fr);
   gap:1px; background:var(--line);
-  border:1px solid var(--line); border-radius:8px;
-  overflow:hidden; margin-top:56px;
+  border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:56px;
 }
 .step {
-  background:var(--surface);
-  padding:40px 36px;
-  display:flex; flex-direction:column; gap:20px;
-  position:relative; transition:background .2s;
+  background:var(--surface); padding:40px 34px;
+  display:flex; flex-direction:column; gap:18px;
+  transition:background .25s, transform .25s var(--ease);
 }
-.step:hover { background:var(--surface-2); }
+.step:hover { background:var(--surface-2); transform:translateY(-2px); }
 .step-num {
-  font-size:11px; font-weight:700; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--cyan);
+  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan);
   display:flex; align-items:center; gap:8px;
 }
-.step-num::after { content:''; flex:1; max-width:32px; height:1px; background:rgba(0,229,255,.3); }
-.step h3 { font-size:1.05rem; font-weight:700; margin-bottom:0; }
-.step p { font-size:.875rem; color:var(--white-60); line-height:1.65; }
-
-@media(max-width:720px){
-  .process-steps { grid-template-columns:1fr; }
-  .step { padding:32px 28px; }
-}
+.step-num::after { content:''; flex:1; max-width:28px; height:1px; background:rgba(0,229,255,.3); }
+.step h3 { font-size:1.02rem; font-weight:700; margin-bottom:0; }
+.step p { font-size:.865rem; color:var(--white-60); line-height:1.68; }
 
 /* ═══════════════════════════════════════════
    ⑨ URGENCY
 ═══════════════════════════════════════════ */
 .urgency {
-  background:var(--bg-2);
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-  text-align:center; padding:100px 5%;
+  background:var(--bg-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  text-align:center; padding:100px clamp(20px,5%,60px);
 }
 .urgency-badge {
   display:inline-flex; align-items:center; gap:8px;
-  background:var(--red-dim); border:1px solid rgba(255,45,45,.2);
+  background:var(--red-dim); border:1px solid rgba(255,45,45,.22);
   padding:7px 16px; border-radius:4px; margin-bottom:32px;
   font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--red);
 }
-.urgency-badge::before {
-  content:''; width:6px; height:6px; border-radius:50%;
-  background:var(--red); animation:blink 1.5s infinite;
-}
+.urgency-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--red); animation:blink 1.5s infinite; }
 .urgency h2 { margin-bottom:16px; }
 .urgency h2 span { color:var(--red); }
 .urgency .lead { margin:0 auto 40px; }
-.slots-row { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:40px; }
-.slot { width:36px; height:10px; border-radius:2px; }
+.slots-row { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.slot { width:36px; height:10px; border-radius:2px; transition:transform .3s var(--ease); }
+.slot:hover { transform:scaleY(1.6); }
 .slot.taken { background:rgba(255,45,45,.5); }
-.slot.open { background:rgba(0,229,255,.25); border:1px solid rgba(0,229,255,.2); }
+.slot.open { background:rgba(0,229,255,.22); border:1px solid rgba(0,229,255,.2); }
 .slots-label { font-size:12px; color:var(--white-30); margin-top:10px; margin-bottom:40px; letter-spacing:.04em; }
 
 /* ═══════════════════════════════════════════
    ⑩ FINAL CTA
 ═══════════════════════════════════════════ */
-.final { background:var(--bg); text-align:center; padding:140px 5%; position:relative; overflow:hidden; }
+.final {
+  background:var(--bg); text-align:center;
+  padding:140px clamp(20px,5%,60px);
+  position:relative; overflow:hidden;
+}
 .final-glow {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:700px; height:400px;
-  background:radial-gradient(ellipse, rgba(0,229,255,.06) 0%, transparent 65%);
-  pointer-events:none;
+  width:800px; height:450px;
+  background:radial-gradient(ellipse,rgba(0,229,255,.06) 0%,transparent 65%);
+  pointer-events:none; animation:glowPulse 7s ease-in-out infinite;
 }
 .final h2 { margin-bottom:18px; }
 .final h2 em { font-style:normal; color:var(--cyan); }
@@ -663,140 +588,133 @@ nav {
   display:inline-flex; align-items:center; gap:10px;
   background:#25D366; color:#fff;
   padding:14px 28px; border-radius:6px;
-  font-size:14px; font-weight:600; cursor:pointer;
-  transition:all .25s var(--ease);
+  font-family:var(--font); font-size:14px; font-weight:600; cursor:pointer;
+  transition:all .28s var(--ease);
 }
-.btn-wa:hover { background:#20bc5a; transform:translateY(-1px); box-shadow:0 8px 24px rgba(37,211,102,.2); }
-.btn-wa svg { width:18px; height:18px; }
-.final-meta { margin-top:20px; font-size:12px; color:var(--white-30); }
+.btn-wa:hover { background:#20bc5a; transform:translateY(-1px); box-shadow:0 8px 28px rgba(37,211,102,.22); }
+.btn-wa svg { width:18px; height:18px; flex-shrink:0; }
+.final-meta { margin-top:22px; font-size:12px; color:var(--white-30); line-height:1.8; }
 
 /* ═══════════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════════ */
 footer {
   border-top:1px solid var(--line);
-  padding:28px 5%;
+  padding:28px clamp(20px,5%,60px);
   display:flex; align-items:center; justify-content:space-between;
   flex-wrap:wrap; gap:12px;
 }
-.footer-logo { font-size:13px; font-weight:700; color:var(--white); }
+.footer-logo { font-size:14px; font-weight:800; letter-spacing:-.02em; color:var(--white); }
 .footer-logo span { color:var(--cyan); }
-footer nav { position:static; background:none; backdrop-filter:none; border:none; padding:0; height:auto; }
-footer nav a { font-size:12px; color:var(--white-30); transition:color .2s; }
-footer nav a:hover { color:var(--white); }
+.footer-links { display:flex; align-items:center; gap:24px; }
+.footer-links a { font-size:12px; color:var(--white-30); transition:color .2s; }
+.footer-links a:hover { color:var(--white); }
 .footer-copy { font-size:12px; color:var(--white-30); }
 
 /* ═══════════════════════════════════════════
-   REVEAL ANIMATIONS
+   SCROLLBAR
 ═══════════════════════════════════════════ */
-.reveal {
-  opacity:0; transform:translateY(20px);
-  transition:opacity .7s var(--ease), transform .7s var(--ease);
-}
-.reveal.up { transform:translateY(28px); }
-.reveal.visible { opacity:1; transform:none; }
-.reveal-delay-1 { transition-delay:.08s; }
-.reveal-delay-2 { transition-delay:.16s; }
-.reveal-delay-3 { transition-delay:.24s; }
-
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:var(--bg); }
 ::-webkit-scrollbar-thumb { background:var(--line-mid); border-radius:4px; }
 ::-webkit-scrollbar-thumb:hover { background:var(--white-30); }
 
 /* ═══════════════════════════════════════════
-   GLOBAL RESPONSIVE FIXES
+   RESPONSIVE — TABLET LANDSCAPE (≤ 960px)
 ═══════════════════════════════════════════ */
-
-/* ── Large desktop: ensure content never feels crammed */
-@media(min-width:1400px){
-  :root { --max:1160px; }
-  .hero-inner { max-width:1320px; }
-}
-
-/* ── Standard desktop / laptop (900–1280px): balanced proportions */
-@media(max-width:1280px) and (min-width:901px){
-  .hero-inner { padding:0 clamp(32px,4vw,64px); }
-}
-
-/* ── Tablet landscape (768–900px): single-column hero, reduce gaps */
-@media(max-width:900px){
-  section { padding:80px 5%; }
-  .hero { padding-top:100px; padding-bottom:60px; }
-  .hero-inner { padding:0 clamp(20px, 5vw, 48px); }
-  .hero-ctas { gap:10px; }
+@media(max-width:960px){
+  section { padding:90px clamp(20px,5%,48px); }
+  .problem-grid, .offer-grid, .risk-inner { grid-template-columns:1fr; gap:48px; }
+  .problem-callout, .offer-panel { position:static; }
   .ba-header { flex-direction:column; align-items:flex-start; gap:16px; }
   .ba-header .lead { max-width:100%; }
   .pricing-header { flex-direction:column; align-items:flex-start; gap:12px; }
   .pricing-header .lead { max-width:100%; }
-  .price-card { padding:36px 28px; }
-  .callout-stat { font-size:clamp(2.4rem,4vw,3.8rem); }
+  .price-card { padding:32px 26px; }
+  .callout-stat { font-size:clamp(2.4rem,5vw,3.8rem); }
   .problem-callout { padding:32px 28px; }
-  .case-results { grid-template-columns:1fr 1fr; }
+  .case-block { grid-template-columns:1fr; }
+  .case-data { border-right:none; border-bottom:1px solid var(--line); padding:36px 28px; }
+  .case-story { padding:36px 28px; }
+  .pricing-grid { grid-template-columns:repeat(2,1fr); max-width:100%; }
 }
 
-/* ── Tablet portrait (600–768px) */
+/* ── Tablet portrait (≤ 768px) */
 @media(max-width:768px){
-  section { padding:72px 5%; }
-  h2 { font-size:clamp(1.8rem,5.5vw,2.8rem); }
+  section { padding:72px clamp(16px,5%,32px); }
+  h2 { font-size:clamp(1.7rem,5.5vw,2.6rem); }
   .hero { padding-top:88px; padding-bottom:48px; }
   .hero-inner { padding:0 20px; }
   .hero-kicker { font-size:11px; padding:6px 12px; margin-bottom:24px; }
-  .hero .lead { margin-bottom:32px; font-size:1rem; }
-  .hero-ctas { flex-direction:column; align-items:flex-start; }
-  .hero-ctas .btn { width:100%; justify-content:center; }
-  .hero-note { margin-top:12px; }
-  .urgency { padding:72px 5%; }
-  .urgency h2 { font-size:clamp(1.6rem,5vw,2.4rem); }
-  .final { padding:100px 5%; }
-  .final h2 { font-size:clamp(1.8rem,5vw,2.8rem); }
+  .hero .lead { margin-bottom:32px; }
+  .hero-ctas { flex-direction:column; align-items:stretch; gap:10px; }
+  .hero-ctas .btn { justify-content:center; }
+  .hero-note { text-align:center; }
+  .hero-metrics { grid-template-columns:repeat(3,1fr); }
+  .metric-block { padding:22px 14px; }
+  .metric-lbl { font-size:10px; }
+  .ba-grid { grid-template-columns:1fr; max-width:460px; margin:0 auto; }
+  .process-steps { grid-template-columns:1fr; }
+  .step { padding:32px 24px; }
+  .urgency { padding:72px clamp(16px,5%,32px); }
+  .urgency h2 { font-size:clamp(1.6rem,5vw,2.2rem); }
+  .final { padding:100px clamp(16px,5%,32px); }
+  .final h2 { font-size:clamp(1.7rem,5vw,2.6rem); }
   .final-ctas { flex-direction:column; align-items:center; }
   .final-ctas .btn-wa, .final-ctas .btn { width:100%; max-width:320px; justify-content:center; }
   .float-cta { bottom:16px; right:16px; padding:11px 18px; font-size:12px; }
-  footer { flex-direction:column; align-items:flex-start; gap:16px; }
-  .footer-nav-links { display:none; } /* hide footer nav links on mobile */
+  .nav-links { display:none; }
+  footer { flex-direction:column; gap:16px; }
+  .footer-links { display:none; }
 }
 
-/* ── Small mobile (< 480px) */
-@media(max-width:480px){
-  section { padding:60px 4%; }
+/* ── Mobile (≤ 540px) */
+@media(max-width:540px){
+  section { padding:60px 16px; }
+  h1 { font-size:clamp(2.2rem,9vw,3rem); }
+  h2 { font-size:clamp(1.5rem,7.5vw,2rem); }
+  .btn { font-size:13px; padding:13px 22px; }
   .hero-inner { padding:0 16px; }
-  h1 { font-size:clamp(2.4rem,9vw,3.6rem); }
-  h2 { font-size:clamp(1.6rem,7vw,2.2rem); }
-  .btn { font-size:13px; padding:13px 20px; }
-  .hero-ctas .btn { font-size:14px; padding:14px 24px; }
-  .issue-row:hover { margin:0 -8px; padding:28px 8px; }
-  .risk-panel { padding:20px 18px; }
-  .risk-panel-icon { width:36px; height:36px; font-size:16px; }
-  .step { padding:28px 20px; }
-  .benefit { gap:14px; padding:20px 0; }
-  .benefit-icon { width:36px; height:36px; font-size:16px; }
-  .offer-panel-top { padding:24px; }
-  .offer-panel-cta { padding:20px 24px; }
-  .offer-kpis { padding:20px 24px; }
-  .offer-kpi-val { font-size:1.4rem; }
+  .hero-metrics { grid-template-columns:repeat(3,1fr); }
+  .metric-block { padding:18px 10px; }
+  .metric-val { font-size:clamp(1.3rem,5.5vw,1.8rem); }
+  .metric-lbl { font-size:9px; }
+  .pricing-grid { grid-template-columns:1fr; max-width:380px; }
   .price-card { padding:28px 20px; }
-  .price-amount { font-size:2.5rem; }
-  .urgency { padding:60px 4%; }
+  .price-amount { font-size:2.2rem; }
+  .risk-inner { gap:36px; }
+  .risk-panel { padding:20px 18px; }
+  .issue-row:hover { margin:0 -8px; padding:28px 8px; }
+  .callout-stat { font-size:2.6rem; }
+  .problem-callout { padding:24px 18px; }
+  .case-data, .case-story { padding:28px 20px; }
+  .urgency { padding:60px 16px; }
   .slot { width:28px; height:8px; }
-  .final { padding:80px 4%; }
-  .callout-stat { font-size:2.4rem; }
-  .problem-callout { padding:24px 20px; }
-  .nav-logo { font-size:13px; }
+  .final { padding:80px 16px; }
+  .float-cta { padding:10px 16px; font-size:11px; }
+}
+
+/* ── Large desktop (≥ 1400px) */
+@media(min-width:1400px){
+  :root { --max:1160px; }
+  .hero-inner { max-width:1320px; }
+}
+@media(min-width:1280px) and (max-width:1399px){
+  .hero-inner { max-width:1200px; padding:0 clamp(32px,4vw,72px); }
 }
 </style>
 </head>
 <body>
 
-<!-- ── FLOAT CTA ───────────────────────── -->
+<!-- ── FLOAT CTA ─────────────────────── -->
 <button class="float-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
   <span class="dot"></span>
-  Get Free Sample
+  Start for $20
 </button>
 
-<!-- ── NAV ────────────────────────────── -->
-<nav>
-  <span class="nav-logo">Thumb<span>CTR</span></span>
+<!-- ── NAV ───────────────────────────── -->
+<nav id="main-nav">
+  <span class="nav-logo">VEX<span>RA</span></span>
   <div class="nav-links">
     <a href="#problem">The Problem</a>
     <a href="#results">Results</a>
@@ -809,45 +727,45 @@ footer nav a:hover { color:var(--white); }
   </a>
 </nav>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ① HERO
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="hero" id="home">
   <div class="hero-glow"></div>
   <div class="hero-glow-2"></div>
   <div class="hero-lines"></div>
   <div class="hero-inner">
-    <div class="hero-kicker">Platform CTR is declining</div>
+    <div class="hero-kicker">YouTube CTR is earned, not assumed</div>
     <h1 class="reveal">
       Your thumbnails<br/>
-      are the <em>one variable</em><br/>
-      <span class="red-word">limiting</span> your growth.
+      are the <em>single variable</em><br/>
+      <span class="red-word">throttling</span> your reach.
     </h1>
     <p class="lead reveal reveal-delay-1">
-      YouTube allocates reach based on click-through rate. If your thumbnails underperform,
-      the algorithm deprioritises your content—regardless of its quality.
-      We fix that with rigorous, data-informed creative.
+      YouTube distributes based on who clicks — not who should.
+      If your thumbnails aren't engineered for CTR, the algorithm
+      treats your content as low-interest and buries it. We fix that.
     </p>
     <div class="hero-ctas reveal reveal-delay-2">
       <a href="#contact" class="btn btn-primary" style="font-size:15px;padding:15px 32px;">
-        Request a Free Sample
+        Test Thumbnail — $20
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
       </a>
       <a href="#results" class="btn btn-ghost" style="font-size:15px;padding:15px 32px;">View Results</a>
     </div>
-    <p class="hero-note reveal reveal-delay-3">No payment. No commitment. One thumbnail, delivered free.</p>
+    <p class="hero-note reveal reveal-delay-3">Paid test thumbnail · Full quality · 48-hour delivery</p>
   </div>
-  <div class="hero-metrics reveal">
+  <div class="hero-metrics">
     <div class="metric-block">
-      <div class="metric-val"><span>3.1×</span></div>
-      <div class="metric-lbl">Average CTR Improvement</div>
+      <div class="metric-val" data-target="3.1" data-suffix="×"><span>3.1×</span></div>
+      <div class="metric-lbl">Average CTR Lift</div>
     </div>
     <div class="metric-block">
-      <div class="metric-val">200<span>+</span></div>
+      <div class="metric-val" data-target="200" data-suffix="+">200<span>+</span></div>
       <div class="metric-lbl">Thumbnails Delivered</div>
     </div>
     <div class="metric-block">
-      <div class="metric-val"><span>48</span>hr</div>
+      <div class="metric-val" data-target="48" data-suffix="hr"><span>48</span>hr</div>
       <div class="metric-lbl">Standard Turnaround</div>
     </div>
   </div>
@@ -855,54 +773,54 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ② PROBLEM
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="problem" id="problem">
   <div class="wrap">
-    <div class="eyebrow red reveal">Why most channels stall</div>
-    <h2 class="reveal">The CTR problem<br/>nobody talks about.</h2>
+    <div class="eyebrow red reveal">Why most channels plateau</div>
+    <h2 class="reveal">The CTR problem<br/>no one talks about.</h2>
     <div class="problem-grid">
-      <div class="problem-issues reveal">
-        <div class="issue-row">
+      <div class="problem-issues">
+        <div class="issue-row reveal">
           <span class="issue-index">01</span>
           <div class="issue-content">
-            <h4>The algorithm rewards clicks, not quality.</h4>
-            <p>YouTube measures your content's value by how many people click when shown it. A <span class="pain">low CTR signals low relevance</span>—and distribution is cut accordingly.</p>
+            <h4>YouTube rewards clicks, not quality.</h4>
+            <p>The algorithm uses CTR to measure perceived value. A <span class="pain">low CTR signals low demand</span> — distribution gets cut accordingly, regardless of how good your video actually is.</p>
           </div>
         </div>
-        <div class="issue-row">
+        <div class="issue-row reveal reveal-delay-1">
           <span class="issue-index">02</span>
           <div class="issue-content">
-            <h4>Viewers decide in under 400 milliseconds.</h4>
-            <p>Your thumbnail competes with dozens of others on a single screen. <span class="pain">Designs that don't create immediate pattern interruption get scrolled past</span>, every time.</p>
+            <h4>Decisions happen in under half a second.</h4>
+            <p>Your thumbnail competes against 20+ others on a single screen. <span class="pain">Designs that fail to create an immediate pattern interrupt get skipped</span> before they're even consciously seen.</p>
           </div>
         </div>
-        <div class="issue-row">
+        <div class="issue-row reveal reveal-delay-2">
           <span class="issue-index">03</span>
           <div class="issue-content">
-            <h4>Most thumbnails are designed for aesthetics, not behaviour.</h4>
-            <p>Visually polished thumbnails frequently underperform plain, strategically composed ones. <span class="pain">Design intuition and CTR strategy are not the same discipline.</span></p>
+            <h4>Aesthetics and performance are different skills.</h4>
+            <p>A polished thumbnail frequently underperforms a strategically composed one. <span class="pain">Visual taste and CTR science are not the same discipline.</span> Most designers only know one.</p>
           </div>
         </div>
-        <div class="issue-row">
+        <div class="issue-row reveal reveal-delay-3">
           <span class="issue-index">04</span>
           <div class="issue-content">
-            <h4>Niche-blind design fails systematically.</h4>
-            <p>What drives clicks in finance differs fundamentally from gaming or health. <span class="pain">Generic creative templates ignore the category-specific cues</span> viewers respond to.</p>
+            <h4>Generic templates ignore niche psychology.</h4>
+            <p>What drives clicks in finance is structurally different from tech, gaming, or health. <span class="pain">Category-blind design leaves measurable CTR on the table</span> every single upload.</p>
           </div>
         </div>
       </div>
       <div class="reveal reveal-delay-1">
         <div class="problem-callout">
           <div class="callout-stat"><span>68%</span></div>
-          <div class="callout-sub">of YouTube videos receive fewer than 1,000 views—not because of content quality, but because of poor click-through performance in the algorithm's initial distribution window.</div>
+          <div class="callout-sub">of YouTube videos receive fewer than 1,000 views. Not because of content quality — because of poor CTR in the algorithm's initial test window. That window is 24–48 hours. Once it closes, recovery is rare.</div>
           <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:20px;">
-            Audit My Thumbnails Free
+            Audit My Thumbnails — $20
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
           </a>
           <div class="callout-note">
-            We will review your last 5 thumbnails, identify the core CTR inhibitors, and deliver one redesigned thumbnail at no cost. You decide whether to continue.
+            We review your channel, identify the exact CTR inhibitors, and deliver a fully redesigned test thumbnail within 48 hours. Pay $20. See the work. Decide from there.
           </div>
         </div>
       </div>
@@ -912,9 +830,9 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ③ BEFORE / AFTER
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="ba" id="results">
   <div class="wrap">
     <div class="ba-header">
@@ -922,19 +840,19 @@ footer nav a:hover { color:var(--white); }
         <div class="eyebrow reveal">Documented Results</div>
         <h2 class="reveal">Before. After.<br/>The numbers.</h2>
       </div>
-      <p class="lead reveal" style="max-width:340px;">Three representative examples from our client base. CTR data pulled directly from YouTube Studio analytics.</p>
+      <p class="lead reveal" style="max-width:320px;">Three real client examples. CTR data pulled directly from YouTube Studio analytics.</p>
     </div>
     <div class="ba-grid reveal">
 
       <!-- Card 1 -->
       <div class="ba-card">
         <div class="ba-visual before">
-          <div class="ba-visual-inner">Before Thumbnail</div>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/before1.jpg" alt="Before thumbnail 1" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
           <span class="ba-chip b">Before</span>
         </div>
         <div class="ba-sep">redesigned</div>
         <div class="ba-visual after">
-          <div class="ba-visual-inner">After Thumbnail</div>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/after1.jpg" alt="After thumbnail 1" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
           <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
@@ -956,12 +874,12 @@ footer nav a:hover { color:var(--white); }
       <!-- Card 2 -->
       <div class="ba-card">
         <div class="ba-visual before">
-          <div class="ba-visual-inner">Before Thumbnail</div>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/before2.jpg" alt="Before thumbnail 2" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
           <span class="ba-chip b">Before</span>
         </div>
         <div class="ba-sep">redesigned</div>
         <div class="ba-visual after">
-          <div class="ba-visual-inner">After Thumbnail</div>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/after2.jpg" alt="After thumbnail 2" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
           <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
@@ -983,12 +901,12 @@ footer nav a:hover { color:var(--white); }
       <!-- Card 3 -->
       <div class="ba-card">
         <div class="ba-visual before">
-          <div class="ba-visual-inner">Before Thumbnail</div>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/before3.jpg" alt="Before thumbnail 3" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
           <span class="ba-chip b">Before</span>
         </div>
         <div class="ba-sep">redesigned</div>
         <div class="ba-visual after">
-          <div class="ba-visual-inner">After Thumbnail</div>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/after3.jpg" alt="After thumbnail 3" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
           <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
@@ -1013,57 +931,56 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ④ OFFER
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="offer" id="offer">
   <div class="wrap">
     <div class="eyebrow reveal">What we deliver</div>
     <h2 class="reveal">Performance creative.<br/>Not just design.</h2>
     <div class="offer-grid">
-      <div class="offer-benefits reveal">
-        <div class="benefit">
+      <div class="offer-benefits">
+        <div class="benefit reveal">
           <div class="benefit-icon">⚡</div>
           <div class="benefit-text">
             <h4>CTR-First Methodology</h4>
-            <p>Every creative decision—composition, contrast, typography, colour—is made to maximise click-through rate, not aesthetic preference.</p>
+            <p>Every decision — composition, contrast, typography, facial expression, colour — is made to maximise click-through rate. Not to win a design portfolio award.</p>
           </div>
         </div>
-        <div class="benefit">
+        <div class="benefit reveal reveal-delay-1">
           <div class="benefit-icon">🔬</div>
           <div class="benefit-text">
-            <h4>Niche & Competitor Research</h4>
-            <p>We study the top-performing thumbnails in your specific category before touching a single pixel. What works in finance fails in gaming.</p>
+            <h4>Deep Niche Research</h4>
+            <p>We study the top-performing thumbnails in your category before touching a pixel. What converts in finance fails in gaming. We know the difference.</p>
           </div>
         </div>
-        <div class="benefit">
+        <div class="benefit reveal reveal-delay-2">
           <div class="benefit-icon">🧪</div>
           <div class="benefit-text">
-            <h4>Two Variants Per Video</h4>
-            <p>Each delivery includes two distinct thumbnail directions, ready for YouTube's built-in A/B testing. The algorithm selects the winner automatically.</p>
+            <h4>Two Variants per Video</h4>
+            <p>Each delivery includes two distinct directions for YouTube's A/B test. The algorithm finds the winner. You get the data.</p>
           </div>
         </div>
-        <div class="benefit">
+        <div class="benefit reveal reveal-delay-3">
           <div class="benefit-icon">📐</div>
           <div class="benefit-text">
-            <h4>Channel Consistency</h4>
-            <p>We develop a thumbnail visual language that compounds over time—recognition in the feed increases repeat clicks from existing subscribers.</p>
+            <h4>Channel Visual Language</h4>
+            <p>We build a thumbnail system that compounds over time. Consistent recognition in the feed increases click rate from both new and returning viewers.</p>
           </div>
         </div>
-        <div class="benefit">
+        <div class="benefit reveal reveal-delay-4">
           <div class="benefit-icon">🔁</div>
           <div class="benefit-text">
-            <h4>Unlimited Revisions</h4>
-            <p>We iterate until the output is right. There is no revision limit, no additional charge, no friction.</p>
+            <h4>Revisions Until It's Right</h4>
+            <p>No round limits. No extra fees. We iterate until the deliverable meets the standard — because our reputation depends on your results.</p>
           </div>
         </div>
       </div>
-
       <div class="reveal reveal-delay-1">
         <div class="offer-panel">
           <div class="offer-panel-top">
-            <h3>How we're different</h3>
-            <p>Freelance designers produce creative based on aesthetic judgment. We produce creative based on CTR data, behavioural psychology, and platform-specific performance patterns. The distinction is measurable.</p>
+            <h3>Why VEXRA is different</h3>
+            <p>Most designers produce creative based on visual preference. We produce creative based on CTR data, behavioural patterns, and niche-specific psychology. The distinction is measurable — and it shows up in your YouTube Studio within days.</p>
           </div>
           <div class="offer-kpis">
             <div class="offer-kpi">
@@ -1076,7 +993,7 @@ footer nav a:hover { color:var(--white); }
             </div>
             <div class="offer-kpi">
               <div class="offer-kpi-val">2</div>
-              <div class="offer-kpi-lbl">Variants per video</div>
+              <div class="offer-kpi-lbl">Variants / video</div>
             </div>
             <div class="offer-kpi">
               <div class="offer-kpi-val">∞</div>
@@ -1085,7 +1002,7 @@ footer nav a:hover { color:var(--white); }
           </div>
           <div class="offer-panel-cta">
             <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center;font-size:14px;">
-              Start With a Free Sample
+              Start with a Test Thumbnail — $20
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
             </a>
           </div>
@@ -1097,34 +1014,38 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
-   ⑤ CASE STUDY
-═══════════════════════════════════════ -->
+<!-- ════════════════════════════════════
+   ⑤ CASE STUDY 1
+════════════════════════════════════ -->
 <section class="case" id="case">
   <div class="wrap">
-    <div class="eyebrow reveal">Case Study</div>
-    <h2 class="reveal">1.8% → 9.4% CTR.<br/>Same content. Different thumbnail.</h2>
+    <div class="eyebrow reveal">Case Study 01</div>
+    <h2 class="reveal">From 1.9% to 8.6% CTR<br/>in a single redesign.</h2>
     <div class="case-block reveal">
       <div class="case-data">
         <div>
           <div class="case-channel-label">Channel</div>
-          <div class="case-channel-name">TechWith Aarav</div>
+          <div class="case-channel-name">Ukraine Matters</div>
+          <div style="margin-top:8px;font-size:.8rem;color:var(--white-30);">Geopolitics · Current Affairs · 210K subscribers</div>
+        </div>
+        <div class="case-thumb-wrap">
+          <img src="https://kryptexvisuals-boop.github.io/my-website/thumbnail1.jpg" alt="Ukraine Matters case study thumbnail" loading="lazy"/>
         </div>
         <div class="case-results">
           <div class="case-result">
-            <div class="case-result-val red">1.8%</div>
+            <div class="case-result-val red">1.9%</div>
             <div class="case-result-lbl">CTR Before</div>
           </div>
           <div class="case-result">
-            <div class="case-result-val">9.4%</div>
+            <div class="case-result-val">8.6%</div>
             <div class="case-result-lbl">CTR After</div>
           </div>
           <div class="case-result">
-            <div class="case-result-val" style="font-size:1.3rem;">42K</div>
+            <div class="case-result-val" style="font-size:1.25rem;">28K</div>
             <div class="case-result-lbl">Avg Views Before</div>
           </div>
           <div class="case-result">
-            <div class="case-result-val" style="font-size:1.3rem;">218K</div>
+            <div class="case-result-val" style="font-size:1.25rem;">152K</div>
             <div class="case-result-lbl">Avg Views After</div>
           </div>
         </div>
@@ -1132,22 +1053,16 @@ footer nav a:hover { color:var(--white); }
       <div class="case-story">
         <div>
           <p class="case-context">
-            Aarav had been publishing weekly for <strong>two years</strong>, averaging <strong>40–50K views per video</strong>.
-            His content quality was high—his CTR was not. At <span class="num">1.8%</span>, YouTube's distribution algorithm
-            treated his videos as low-engagement content and throttled reach accordingly.<br/><br/>
-            After a thumbnail audit, we identified three structural issues: visual clutter at small sizes,
-            a colour palette that blended into the YouTube feed, and a lack of immediate curiosity framing.
-            We rebuilt his thumbnail system from scratch.<br/><br/>
-            His next video hit <span class="num">218K views</span>. The video after that, <span class="num">190K</span>.
-            His channel average CTR stabilised at <span class="num">8.7%</span> over the following quarter—
-            a number the algorithm rewards with sustained distribution.
+            Georgijs had built a strong audience around geopolitical analysis and current affairs. His research quality was high, but thumbnails were underperforming. With a <span class="neg">1.9% CTR</span>, videos were not being pushed aggressively despite strong viewer interest.<br/><br/>
+            Three issues stood out immediately. Headlines were visually weak at mobile size, imagery lacked emotional tension, and the overall colour palette blended into the YouTube feed. Important topics looked less urgent than they actually were.<br/><br/>
+            We rebuilt the thumbnail system around stronger contrast, cleaner hierarchy, sharper emotional framing, and clearer visual stakes. The next uploads surged to <span class="num">152,000 views</span>, while CTR stabilised above <span class="num">8%</span> over the following month.
           </p>
         </div>
         <div class="case-author-row">
-          <div class="case-avatar">👨‍💻</div>
+          <div class="case-avatar">🌍</div>
           <div>
-            <div class="case-author-name">Aarav S. — Tech Creator</div>
-            <div class="case-author-meta">280K subscribers · Case data verified from YouTube Studio</div>
+            <div class="case-author-name">Georgijs — Ukraine Matters</div>
+            <div class="case-author-meta">210K subscribers · Analytics verified from YouTube Studio</div>
           </div>
         </div>
       </div>
@@ -1157,31 +1072,89 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
+   ⑤b CASE STUDY 2
+════════════════════════════════════ -->
+<section class="case" id="case2">
+  <div class="wrap">
+    <div class="eyebrow reveal">Case Study 02</div>
+    <h2 class="reveal">A finance channel went from<br/>flat CTR to breakout growth.</h2>
+    <div class="case-block reveal">
+      <div class="case-data">
+        <div>
+          <div class="case-channel-label">Channel</div>
+          <div class="case-channel-name">Ross Givens</div>
+          <div style="margin-top:8px;font-size:.8rem;color:var(--white-30);">Finance · Trading · 82K subscribers</div>
+        </div>
+        <div class="case-thumb-wrap">
+          <img src="https://kryptexvisuals-boop.github.io/my-website/thumbnail2.jpg" alt="Ross Givens case study thumbnail" loading="lazy"/>
+        </div>
+        <div class="case-results">
+          <div class="case-result">
+            <div class="case-result-val red">2.3%</div>
+            <div class="case-result-lbl">CTR Before</div>
+          </div>
+          <div class="case-result">
+            <div class="case-result-val">9.7%</div>
+            <div class="case-result-lbl">CTR After</div>
+          </div>
+          <div class="case-result">
+            <div class="case-result-val" style="font-size:1.25rem;">14K</div>
+            <div class="case-result-lbl">Avg Views Before</div>
+          </div>
+          <div class="case-result">
+            <div class="case-result-val" style="font-size:1.25rem;">89K</div>
+            <div class="case-result-lbl">Avg Views After</div>
+          </div>
+        </div>
+      </div>
+      <div class="case-story">
+        <div>
+          <p class="case-context">
+            Ross was publishing strong finance and trading content, but weak packaging was limiting reach. At <span class="neg">2.3% CTR</span>, videos were not converting impressions into clicks at the level needed for consistent growth.<br/><br/>
+            The thumbnails relied on generic market visuals used across the niche: charts, arrows, and predictable templates. There was little urgency, weak curiosity, and no clear reason to click one video over another.<br/><br/>
+            We repositioned the visual strategy around bold hooks, cleaner layouts, stronger emotional contrast, and sharper human-led branding. The first rollout reached <span class="num">89,000 views</span>, with CTR climbing to <span class="num">9.7%</span> and channel momentum accelerating.
+          </p>
+        </div>
+        <div class="case-author-row">
+          <div class="case-avatar">📈</div>
+          <div>
+            <div class="case-author-name">Ross — Ross Givens</div>
+            <div class="case-author-meta">82K subscribers · Analytics verified from YouTube Studio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ════════════════════════════════════
    ⑥ PRICING
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="pricing" id="pricing">
   <div class="wrap">
     <div class="pricing-header">
       <div>
         <div class="eyebrow reveal">Pricing</div>
-        <h2 class="reveal">Straightforward.<br/>No subscriptions.</h2>
+        <h2 class="reveal">Clear pricing.<br/>No hidden costs.</h2>
       </div>
-      <p class="lead reveal" style="max-width:320px;">Pay per output. No retainers, no contracts. Start free, scale on results.</p>
+      <p class="lead reveal" style="max-width:340px;">Start with a $20 test thumbnail. Scale when you see the results. No contracts, no retainers.</p>
     </div>
     <div class="pricing-grid reveal">
 
-      <!-- Single -->
+      <!-- Starter -->
       <div class="price-card">
-        <div class="price-label">Single Thumbnail</div>
-        <div class="price-amount"><sup>$</sup>35</div>
-        <div class="price-sub">2 variants · 48-hour delivery</div>
-        <div class="price-was">&nbsp;</div>
+        <div class="price-label">Starter</div>
+        <div class="price-amount"><sup>$</sup>49</div>
+        <div class="price-sub">1 Thumbnail · 2 variants</div>
+        <div class="price-per">Per video</div>
         <div class="price-divider"></div>
         <div class="price-features">
-          <div class="price-feature">2 high-resolution thumbnail variants</div>
-          <div class="price-feature">CTR strategy brief included</div>
-          <div class="price-feature">48-hour standard delivery</div>
+          <div class="price-feature">2 high-resolution variants</div>
+          <div class="price-feature">CTR strategy brief</div>
+          <div class="price-feature">48-hour delivery</div>
           <div class="price-feature">Unlimited revisions</div>
           <div class="price-feature">PNG + layered source file</div>
         </div>
@@ -1190,79 +1163,118 @@ footer nav a:hover { color:var(--white); }
         </a>
       </div>
 
-      <!-- Bundle -->
+      <!-- Growth -->
       <div class="price-card featured">
-        <div class="price-label featured-label">5-Thumbnail Bundle</div>
-        <div class="price-amount"><sup>$</sup>100</div>
-        <div class="price-sub">10 variants · Priority 24hr delivery</div>
-        <div class="price-was">Saves <s>$75</s> vs. single rate — <strong>$20 per thumbnail</strong></div>
+        <div class="price-label featured-label">Growth</div>
+        <div class="price-amount"><sup>$</sup>229</div>
+        <div class="price-sub">5 Thumbnails · 10 variants</div>
+        <div class="price-per"><strong>$45.80 per thumbnail</strong> — save $16 vs. Starter</div>
         <div class="price-divider"></div>
         <div class="price-features">
-          <div class="price-feature">10 high-resolution thumbnail variants</div>
+          <div class="price-feature">10 high-resolution variants</div>
           <div class="price-feature">Full channel CTR audit</div>
           <div class="price-feature">Priority 24-hour delivery</div>
           <div class="price-feature">Unlimited revisions</div>
           <div class="price-feature">PNG + layered source files</div>
-          <div class="price-feature">20-minute strategy consultation</div>
-          <div class="price-feature">Thumbnail visual language guide</div>
+          <div class="price-feature">Direct WhatsApp consultation</div>
         </div>
         <a href="#contact" class="btn btn-primary" style="justify-content:center;">
-          Get the Bundle
+          Get Growth
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </a>
       </div>
 
+      <!-- Scale -->
+      <div class="price-card">
+        <div class="price-label">Scale</div>
+        <div class="price-amount"><sup>$</sup>599</div>
+        <div class="price-sub">15 Thumbnails · 30 variants</div>
+        <div class="price-per"><strong>$39.93 per thumbnail</strong> — best per-unit rate</div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">30 high-resolution variants</div>
+          <div class="price-feature">Full channel visual system</div>
+          <div class="price-feature">Priority 24-hour delivery</div>
+          <div class="price-feature">Unlimited revisions</div>
+          <div class="price-feature">PNG + layered source files</div>
+          <div class="price-feature">Weekly strategy sessions</div>
+          <div class="price-feature">Priority WhatsApp support</div>
+        </div>
+        <a href="#contact" class="btn btn-ghost" style="justify-content:center;">
+          Get Scale
+        </a>
+      </div>
+
+      <!-- Custom -->
+      <div class="price-card">
+        <div class="price-label">Custom</div>
+        <div class="price-amount" style="font-size:1.8rem;letter-spacing:-.02em;line-height:1.2;margin-bottom:12px;">Monthly<br/>Package</div>
+        <div class="price-sub">For full-time creators & agencies</div>
+        <div class="price-per" style="margin-bottom:24px;">Custom volume · Custom SLA · Custom workflow</div>
+        <div class="price-divider"></div>
+        <div class="price-features">
+          <div class="price-feature">Unlimited thumbnails</div>
+          <div class="price-feature">Dedicated creative lead</div>
+          <div class="price-feature">Same-day turnaround option</div>
+          <div class="price-feature">Channel growth reporting</div>
+          <div class="price-feature">Direct WhatsApp access</div>
+        </div>
+        <div class="price-contact">
+          <a href="#contact" class="btn btn-ghost" style="justify-content:center;">
+            Contact for Pricing
+          </a>
+          <p>Best for channels publishing 6+ videos per month.</p>
+        </div>
+      </div>
+
     </div>
-    <p style="text-align:center;font-size:13px;color:var(--white-30);margin-top:24px;">
+    <p style="text-align:center;font-size:13px;color:var(--white-30);margin-top:28px;">
       Not ready to commit?
-      <a href="#contact" style="color:var(--cyan);font-weight:500;">Request a free sample thumbnail first.</a>
-      No payment required.
+      <a href="#contact" style="color:var(--cyan);font-weight:500;">Start with a $20 test thumbnail</a> — one thumbnail, full quality, 48 hours.
     </p>
   </div>
 </section>
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ⑦ RISK REVERSAL
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="risk" id="guarantee">
   <div class="wrap">
-    <div class="eyebrow reveal">Zero Risk</div>
-    <h2 class="reveal">We produce first.<br/>You pay if it's right.</h2>
+    <div class="eyebrow reveal">Minimal Risk</div>
+    <h2 class="reveal">$20 to see exactly<br/>what we can do.</h2>
     <div class="risk-inner">
       <div class="reveal">
-        <div class="risk-headline">Free sample.<br/><em>Full quality.</em><br/>No conditions.</div>
+        <div class="risk-headline">One test thumbnail.<br/><em>Real quality.</em><br/>Zero guesswork.</div>
         <p class="risk-sub">
-          We don't offer free samples as a sales tactic. We offer them because the work sells itself.
-          Send us your channel, we'll design one thumbnail, and you'll see exactly what working with us looks like
-          before a single dollar is exchanged.
+          The $20 test thumbnail isn't a downgrade — it's the same process, same quality, same methodology as every paid order. It exists so you can evaluate our work against a real video before committing to a package. If it moves your CTR, you'll know. If it doesn't, you spent $20 and learned something concrete.
         </p>
         <a href="#contact" class="btn btn-primary" style="font-size:15px;padding:15px 32px;">
-          Claim Your Free Thumbnail
+          Order Test Thumbnail — $20
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </a>
       </div>
       <div class="risk-panels reveal reveal-delay-1">
         <div class="risk-panel">
-          <div class="risk-panel-icon">🎁</div>
+          <div class="risk-panel-icon">🎯</div>
           <div>
-            <h4>One Free Thumbnail</h4>
-            <p>We design one real, full-quality thumbnail for your channel at no cost. This is not a mockup or a watermarked preview—it's production-ready work.</p>
+            <h4>Paid Test — $20</h4>
+            <p>One production-ready thumbnail for a real video on your channel. Two variants. Same turnaround, same quality as any standard order.</p>
           </div>
         </div>
         <div class="risk-panel">
           <div class="risk-panel-icon">✓</div>
           <div>
-            <h4>Pay Only When Satisfied</h4>
-            <p>For paid orders, if the final deliverable does not meet expectations after revisions, you do not pay. Our incentive is your result.</p>
+            <h4>Satisfaction or We Redo It</h4>
+            <p>If the deliverable doesn't meet expectations after revisions, we redo the work. Your approval is the final standard — not ours.</p>
           </div>
         </div>
         <div class="risk-panel">
           <div class="risk-panel-icon">∞</div>
           <div>
             <h4>Revisions Without Limits</h4>
-            <p>We revise until the output performs. There is no cap on revision rounds, no escalating fees, no change-order process.</p>
+            <p>No round caps, no escalating fees. We revise until the output performs. That's the commitment on every order, not just the first one.</p>
           </div>
         </div>
       </div>
@@ -1272,28 +1284,28 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ⑧ PROCESS
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="process" id="process">
   <div class="wrap">
     <div class="eyebrow reveal">How It Works</div>
-    <h2 class="reveal">Simple process.<br/>Measurable output.</h2>
+    <h2 class="reveal">Three steps.<br/>Measurable output.</h2>
     <div class="process-steps reveal">
       <div class="step">
         <div class="step-num">Step 01</div>
-        <h3>Share your video context</h3>
-        <p>Send us your video link or working title, your channel URL, and any reference thumbnails you find effective. The brief takes under three minutes.</p>
+        <h3>Share your video brief</h3>
+        <p>Send us your video link or working title, your channel URL, and any reference thumbnails you respond to. The brief takes under three minutes to complete.</p>
       </div>
       <div class="step">
         <div class="step-num">Step 02</div>
-        <h3>We research, strategise, design</h3>
-        <p>We analyse your niche's top-performing thumbnails, identify the visual patterns that drive clicks, and apply them to your content. Two variants are delivered within 48 hours.</p>
+        <h3>We research and build</h3>
+        <p>We analyse your niche's top-performing thumbnails, identify the visual cues that drive clicks, and deliver two production-ready variants within 48 hours.</p>
       </div>
       <div class="step">
         <div class="step-num">Step 03</div>
-        <h3>Upload, test, watch the data</h3>
-        <p>Publish with YouTube's A/B thumbnail test enabled. The algorithm runs both variants against your audience and selects the higher performer automatically. You track the CTR lift in Studio.</p>
+        <h3>Upload, test, track results</h3>
+        <p>Enable YouTube's A/B thumbnail test. The algorithm runs both variants and selects the stronger performer. You watch the CTR data move in Studio within days.</p>
       </div>
     </div>
   </div>
@@ -1301,14 +1313,14 @@ footer nav a:hover { color:var(--white); }
 
 <div class="section-rule"></div>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ⑨ URGENCY
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="urgency" id="availability">
   <div class="wrap" style="max-width:640px;">
     <div class="urgency-badge">Limited weekly capacity</div>
-    <h2 class="reveal">We take <span>7 clients</span><br/>per week. No exceptions.</h2>
-    <p class="lead reveal">To maintain quality, each thumbnail project receives our full attention. We don't scale on volume—we scale on results. Once the week fills, the next slot opens the following Monday.</p>
+    <h2 class="reveal">We take <span>7 projects</span><br/>per week. That's it.</h2>
+    <p class="lead reveal">Quality degrades at scale. We deliberately limit intake to ensure every thumbnail gets the full research and creative process it deserves. Once the week fills, the next opening is Monday.</p>
     <div class="slots-row reveal">
       <div class="slot taken"></div>
       <div class="slot taken"></div>
@@ -1318,110 +1330,139 @@ footer nav a:hover { color:var(--white); }
       <div class="slot open"></div>
       <div class="slot open"></div>
     </div>
-    <p class="slots-label reveal">4 slots taken · 3 remaining this week</p>
+    <p class="slots-label reveal">4 taken · 3 open this week</p>
     <div class="reveal">
       <a href="#contact" class="btn btn-red" style="font-size:15px;padding:15px 36px;">
-        Secure a Slot Now
+        Claim a Slot — $20 Test
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
       </a>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
+<!-- ════════════════════════════════════
    ⑩ FINAL CTA
-═══════════════════════════════════════ -->
+════════════════════════════════════ -->
 <section class="final" id="contact">
   <div class="final-glow"></div>
-  <div class="wrap" style="max-width:700px;position:relative;z-index:1;">
-    <div class="eyebrow reveal" style="justify-content:center;">Get Started Today</div>
-    <h2 class="reveal">One thumbnail.<br/>No cost. <em>Real results.</em></h2>
+  <div class="wrap" style="max-width:680px;position:relative;z-index:1;">
+    <div class="eyebrow reveal" style="justify-content:center;">Work with VEXRA</div>
+    <h2 class="reveal">One thumbnail.<br/><em>Real data. Real results.</em></h2>
     <p class="lead reveal" style="margin-left:auto;margin-right:auto;text-align:center;">
-      Share your channel and we'll design a free sample thumbnail within 48 hours.
-      If it performs, we continue. If not, you've lost nothing.
+      Send us your channel and video. We'll deliver a fully designed test thumbnail within 48 hours for $20. If the CTR moves, we keep going. If not, you've spent $20 and have a clear answer.
     </p>
     <div class="final-ctas reveal">
-      <a class="btn-wa" href="https://wa.me/911234567890?text=Hi%2C%20I%27d%20like%20a%20free%20thumbnail%20sample%20for%20my%20YouTube%20channel." target="_blank">
+      <a class="btn-wa" href="https://wa.me/917752991592?text=Hi%20VEXRA%2C%20I%27d%20like%20to%20order%20a%20test%20thumbnail%20for%20my%20YouTube%20channel." target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-        WhatsApp Us
+        WhatsApp — Start Now
       </a>
-      <a href="mailto:hello@thumbctr.com?subject=Free%20Thumbnail%20Sample%20Request" class="btn btn-ghost" style="font-size:14px;padding:14px 28px;">
+      <a href="mailto:vexrastudio7@gmail.com?subject=Test%20Thumbnail%20Order" class="btn btn-ghost" style="font-size:14px;padding:14px 28px;">
         Email Instead
       </a>
     </div>
     <p class="final-meta reveal">
-      hello@thumbctr.com &nbsp;·&nbsp; Avg response under 2 hours &nbsp;·&nbsp; Free sample within 48 hours
+      vexrastudio7@gmail.com &nbsp;·&nbsp; Response within 2 hours &nbsp;·&nbsp; Delivery within 48 hours
     </p>
   </div>
 </section>
 
-<!-- ── FOOTER ──────────────────────────── -->
+<!-- ── FOOTER ───────────────────────── -->
 <footer>
-  <span class="footer-logo">Thumb<span>CTR</span></span>
-  <nav style="position:static;background:none;backdrop-filter:none;border:none;padding:0;height:auto;">
-    <div class="nav-links footer-nav-links" style="display:flex;">
-      <a href="#problem" style="font-size:12px;color:var(--white-30);">The Problem</a>
-      <a href="#results" style="font-size:12px;color:var(--white-30);">Results</a>
-      <a href="#pricing" style="font-size:12px;color:var(--white-30);">Pricing</a>
-      <a href="#contact" style="font-size:12px;color:var(--white-30);">Contact</a>
-    </div>
-  </nav>
-  <span class="footer-copy">© 2024 ThumbCTR</span>
+  <span class="footer-logo">VEX<span>RA</span></span>
+  <div class="footer-links">
+    <a href="#problem">The Problem</a>
+    <a href="#results">Results</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <span class="footer-copy">© 2024 VEXRA · vexrastudio7@gmail.com</span>
 </footer>
 
-<!-- ═══════════════════════════════════════
-   JS
-═══════════════════════════════════════ -->
+<!-- ════════════════════════════════════
+   JAVASCRIPT
+════════════════════════════════════ -->
 <script>
 // ── Scroll Reveal
-const observer = new IntersectionObserver((entries) => {
+const revealObs = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
+      revealObs.unobserve(entry.target);
     }
   });
-}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0.06, rootMargin: '0px 0px -36px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// ── Float CTA visibility
+// ── Float CTA hide near contact
 const floatBtn = document.querySelector('.float-cta');
-const contactSection = document.getElementById('contact');
-window.addEventListener('scroll', () => {
-  const rect = contactSection.getBoundingClientRect();
-  const inView = rect.top < window.innerHeight * 0.9;
-  floatBtn.style.transition = 'opacity .3s, transform .3s';
-  floatBtn.style.opacity = inView ? '0' : '1';
-  floatBtn.style.pointerEvents = inView ? 'none' : 'auto';
-  floatBtn.style.transform = inView ? 'translateY(8px)' : 'translateY(0)';
-}, { passive: true });
+const contactSec = document.getElementById('contact');
+function updateFloatCTA() {
+  const rect = contactSec.getBoundingClientRect();
+  const hide = rect.top < window.innerHeight * 0.9;
+  floatBtn.style.opacity = hide ? '0' : '1';
+  floatBtn.style.pointerEvents = hide ? 'none' : 'auto';
+  floatBtn.style.transform = hide ? 'translateY(10px)' : 'translateY(0)';
+}
+window.addEventListener('scroll', updateFloatCTA, { passive: true });
 
-// ── Nav active link
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
+// ── Nav active state + scroll-dark
+const navEl = document.getElementById('main-nav');
+const allSections = document.querySelectorAll('section[id]');
+const allNavLinks = document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll', () => {
+  // darken nav on scroll
+  navEl.classList.toggle('scrolled', window.scrollY > 20);
+  // active link
   let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  allSections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 90) current = s.id;
   });
-  navLinks.forEach(a => {
-    a.style.color = a.getAttribute('href') === '#' + current
-      ? 'var(--white)' : 'var(--white-60)';
+  allNavLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
   });
 }, { passive: true });
 
-// ── Stagger metric blocks on load
-window.addEventListener('load', () => {
+// ── Metric counter animation on load
+function animateCounters() {
   document.querySelectorAll('.metric-block').forEach((el, i) => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(12px)';
+    el.style.transform = 'translateY(14px)';
+    const delay = 800 + i * 120;
     setTimeout(() => {
-      el.style.transition = 'opacity .6s var(--ease), transform .6s var(--ease)';
+      el.style.transition = 'opacity .65s cubic-bezier(0.16,1,0.3,1), transform .65s cubic-bezier(0.16,1,0.3,1), background .25s';
       el.style.opacity = '1';
       el.style.transform = 'none';
-    }, 900 + i * 100);
+    }, delay);
   });
+}
+window.addEventListener('load', animateCounters);
+
+// ── Subtle parallax on hero glows
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  const g1 = document.querySelector('.hero-glow');
+  const g2 = document.querySelector('.hero-glow-2');
+  if (g1) g1.style.transform = `translateY(${y * 0.12}px)`;
+  if (g2) g2.style.transform = `translateY(${-y * 0.08}px)`;
+}, { passive: true });
+
+// ── Stagger ba-card reveals
+document.querySelectorAll('.ba-card').forEach((card, i) => {
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(18px)';
+  const cardObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          card.style.transition = 'opacity .65s cubic-bezier(0.16,1,0.3,1), transform .65s cubic-bezier(0.16,1,0.3,1), background .25s';
+          card.style.opacity = '1';
+          card.style.transform = 'none';
+        }, i * 110);
+        cardObs.unobserve(card);
+      }
+    });
+  }, { threshold: 0.08 });
+  cardObs.observe(card);
 });
 </script>
 </body>
