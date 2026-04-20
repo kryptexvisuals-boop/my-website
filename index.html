@@ -273,7 +273,7 @@ nav.scrolled { background:rgba(5,5,5,.96); }
 .problem-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-top:64px; }
 .problem-issues { display:flex; flex-direction:column; }
 .issue-row {
-  display:grid; grid-template-columns:48px 1fr; gap:20px;
+  display:grid; grid-template-columns:48px 1fr; gap:28px;
   padding:28px 0; border-bottom:1px solid var(--line);
   transition:all .25s var(--ease);
 }
@@ -356,7 +356,7 @@ nav.scrolled { background:rgba(5,5,5,.96); }
 .offer-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-top:64px; }
 .offer-benefits { display:flex; flex-direction:column; gap:0; margin-top:8px; }
 .benefit {
-  display:flex; align-items:flex-start; gap:20px;
+  display:flex; align-items:flex-start; gap:28px;
   padding:24px 0; border-bottom:1px solid var(--line);
   transition:padding .25s var(--ease);
 }
@@ -386,7 +386,7 @@ nav.scrolled { background:rgba(5,5,5,.96); }
   padding:28px 36px; display:grid; grid-template-columns:1fr 1fr;
   gap:1px; background:var(--line); border-bottom:1px solid var(--line);
 }
-.offer-kpi { background:var(--surface); padding:20px; transition:background .2s; }
+.offer-kpi { background:var(--surface); padding:24px; transition:background .2s; }
 .offer-kpi:hover { background:var(--surface-2); }
 .offer-kpi-val { font-size:1.8rem; font-weight:800; letter-spacing:-.04em; color:var(--cyan); line-height:1; }
 .offer-kpi-lbl { font-size:11px; color:var(--white-30); text-transform:uppercase; letter-spacing:.07em; margin-top:4px; }
@@ -408,11 +408,16 @@ nav.scrolled { background:rgba(5,5,5,.96); }
 .case-data {
   background:var(--surface-2); padding:52px 44px;
   border-right:1px solid var(--line);
-  display:flex; flex-direction:column; justify-content:space-between; gap:40px;
+  display:flex; flex-direction:column; justify-content:flex-start; gap:24px;
+  align-items:stretch;
 }
-.case-thumb-wrap {
-  width:100%; aspect-ratio:16/9; border-radius:6px; overflow:hidden;
-  border:1px solid var(--line);
+.case-thumb-wrap{
+border-radius:18px;
+overflow:hidden;
+aspect-ratio:16/9;
+width:100%;
+max-width:100%;
+margin:0 auto;
 }
 .case-thumb-wrap img { width:100%; height:100%; object-fit:cover; transition:transform .5s var(--ease); }
 .case-block:hover .case-thumb-wrap img { transform:scale(1.04); }
@@ -444,7 +449,7 @@ nav.scrolled { background:rgba(5,5,5,.96); }
    ⑥ PRICING — 4 cards 2×2
 ═══════════════════════════════════════════ */
 .pricing { background:var(--bg-1); }
-.pricing-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:20px; margin-bottom:56px; }
+.pricing-header { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:28px; margin-bottom:56px; }
 .pricing-grid {
   display:grid; grid-template-columns:repeat(2,1fr);
   gap:1px; background:var(--line);
@@ -634,7 +639,13 @@ footer {
   .callout-stat { font-size:clamp(2.4rem,5vw,3.8rem); }
   .problem-callout { padding:32px 28px; }
   .case-block { grid-template-columns:1fr; }
-  .case-data { border-right:none; border-bottom:1px solid var(--line); padding:36px 28px; }
+  .case-data { 
+border-right:none; 
+border-bottom:1px solid var(--line); 
+padding:36px 28px;
+gap:20px;
+justify-content:flex-start;
+}
   .case-story { padding:36px 28px; }
   .pricing-grid { grid-template-columns:repeat(2,1fr); max-width:100%; }
 }
@@ -847,12 +858,12 @@ footer {
       <!-- Card 1 -->
       <div class="ba-card">
         <div class="ba-visual before">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/before1.jpg" alt="Before thumbnail 1" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//before1.jpg" alt="Before thumbnail 1" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
           <span class="ba-chip b">Before</span>
         </div>
         <div class="ba-sep">redesigned</div>
         <div class="ba-visual after">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/after1.jpg" alt="After thumbnail 1" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//after1.jpg" alt="After thumbnail 1" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
           <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
@@ -874,12 +885,12 @@ footer {
       <!-- Card 2 -->
       <div class="ba-card">
         <div class="ba-visual before">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/before2.jpg" alt="Before thumbnail 2" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images/before2.jpg" alt="Before thumbnail 2" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
           <span class="ba-chip b">Before</span>
         </div>
         <div class="ba-sep">redesigned</div>
         <div class="ba-visual after">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/after2.jpg" alt="After thumbnail 2" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//after2.jpg" alt="After thumbnail 2" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
           <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
@@ -901,12 +912,12 @@ footer {
       <!-- Card 3 -->
       <div class="ba-card">
         <div class="ba-visual before">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/before3.jpg" alt="Before thumbnail 3" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//before3.jpg" alt="Before thumbnail 3" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.07);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>Before</span></div><span class=\'ba-chip b\'>Before</span>'"/>
           <span class="ba-chip b">Before</span>
         </div>
         <div class="ba-sep">redesigned</div>
         <div class="ba-visual after">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/after3.jpg" alt="After thumbnail 3" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//after3.jpg" alt="After thumbnail 3" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'ba-visual-inner\' style=\'background:rgba(0,229,255,.05);color:rgba(0,229,255,.4);border:1px dashed rgba(0,229,255,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;width:75%;height:55%;\'><span>After</span></div><span class=\'ba-chip a\'>After</span>'"/>
           <span class="ba-chip a">After</span>
         </div>
         <div class="ba-body">
@@ -1029,7 +1040,7 @@ footer {
           <div style="margin-top:8px;font-size:.8rem;color:var(--white-30);">Geopolitics · Current Affairs · 210K subscribers</div>
         </div>
         <div class="case-thumb-wrap">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/thumbnail1.jpg" alt="Ukraine Matters case study thumbnail" loading="lazy"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//thumbnail1.jpg" alt="Ukraine Matters case study thumbnail" loading="lazy"/>
         </div>
         <div class="case-results">
           <div class="case-result">
@@ -1087,7 +1098,7 @@ footer {
           <div style="margin-top:8px;font-size:.8rem;color:var(--white-30);">Finance · Trading · 82K subscribers</div>
         </div>
         <div class="case-thumb-wrap">
-          <img src="https://kryptexvisuals-boop.github.io/my-website/thumbnail2.jpg" alt="Ross Givens case study thumbnail" loading="lazy"/>
+          <img src="https://kryptexvisuals-boop.github.io/my-website/images//thumbnail2.jpg" alt="Ross Givens case study thumbnail" loading="lazy"/>
         </div>
         <div class="case-results">
           <div class="case-result">
